@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digaf MFI - Tracker Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 flex h-screen antialiased">
+
+    <!-- SIDEBAR -->
+    <div class="w-64 h-screen bg-slate-50 border-r border-slate-200 p-4 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center space-x-2 mb-8 px-2">
+                <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">D</div>
+                <span class="text-xl font-bold text-slate-800">Digaf <span class="text-xs text-purple-600">MFI</span></span>
+            </div>
+            <nav class="space-y-6">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 tracking-wider mb-2 px-2">OVERVIEW</p>
+                    <div class="space-y-1">
+                        <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium bg-purple-50 text-purple-700 border-l-4 border-purple-600">
+                            <span>Renewal Processing</span>
+                            <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-bold">5</span>
+                        </button>
+                        <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">
+                            <span>Attendance Desk</span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="text-xs text-slate-400 px-2">Powered by Kidus • Control Panel</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- HEADER -->
+        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-sm font-bold tracking-wider text-slate-700 bg-purple-50 px-3 py-1 rounded border border-purple-100">SECOND ROUND TRACKER</h1>
+                <div class="flex items-center space-x-1 text-xs text-emerald-600 font-medium">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span>Synced Listener Active</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div id="terminal-badge" class="bg-amber-50 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold border border-amber-200 cursor-pointer" onclick="bindTerminal()">
+                    UNBOUND (Click to Secure)
+                </div>
+                <div class="bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 border border-slate-200">
+                    Active Officer: <span class="text-purple-700">Kidusyared Liku</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN SECTION -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 space-y-6">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-sm font-bold text-purple-900 flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                    <span>Workflow Management Console</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">እያንዳንዱ የምታሳልፈው ውሳኔ በአንተ ስም በቋሚነት ይመዘገባል።</p>
+            </div>
+
+            <!-- SMART IMPORTER -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider">🔮 Smart Importer</h3>
+                <textarea id="importer-text" oninput="checkNames()" placeholder="እዚህ ላይ የደንበኛ መረጃዎችን ኮፒ አድርገህ አምጣ... (ለምሳሌ: Kalkidan pay day)" class="w-full h-24 p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-mono resize-none"></textarea>
+                <div id="match-warning" class="hidden bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center justify-between text-xs text-amber-800 font-medium">
+                    <span>⚠️ Registered Portfolio Matches: <span id="matched-name" class="font-bold bg-white px-1.5 py-0.5 rounded border border-amber-200">Kalkidan</span></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FLOATING AI BUTTON -->
+    <button onclick="toggleCopilot()" class="fixed bottom-6 right-6 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-4 py-3 rounded-xl shadow-lg transition-all flex items-center space-x-2 z-40">
+        <span>✨</span> <span>Ask Digaf AI</span>
+    </button>
+
+    <!-- AI COPILOT MODAL -->
+    <div id="copilot-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-[#0f172a] text-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col h-[70vh]">
+            <div class="p-4 bg-[#111827] border-b border-slate-800 flex items-center justify-between">
+                <span class="text-xs font-bold tracking-wide">DIGAF SMART AUDITOR</span>
+                <button onclick="toggleCopilot()" class="text-slate-400 hover:text-white font-bold">✕</button>
+            </div>
+            <div class="flex-1 p-6 flex flex-col justify-between bg-[#0b0f19]">
+                <div class="text-center py-10 text-slate-400 text-xs">
+                    <p class="mb-4">ዲጋፍ ስማርት ኦዲተር ዝግጁ ነው</p>
+                    <button onclick="scanDoc()" class="bg-purple-600 text-white px-3 py-1.5 rounded text-xs font-bold">Scan Sample Document</button>
+                    <div id="extracted-date" class="hidden mt-4 p-2 bg-slate-800 text-emerald-400 font-mono text-sm rounded">AI DETECTED DATE: 27/10/2018</div>
+                </div>
+                <button id="inject-btn" disabled onclick="injectLedger()" class="w-full bg-slate-800 text-slate-500 text-xs font-bold py-2.5 rounded-xl uppercase transition-all">Save & Inject Into Active Ledger</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bindTerminal() {
+            const secret = prompt("እባክህ የአድሚን ምስጢራዊ ቁልፍ (Secret Token) አስገባ፦");
+            if (secret === "kidus_secure_system_2026") {
+                const badge = document.getElementById('terminal-badge');
+                badge.className = "bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold border border-emerald-200";
+                badge.innerText = "Kidusyared Liku BOUND";
+            } else { alert("የተሳሳተ ቁልፍ!"); }
+        }
+        function checkNames() {
+            const text = document.getElementById('importer-text').value;
+            const warning = document.getElementById('match-warning');
+            if(text.toLowerCase().includes('kalkidan')) { warning.classList.remove('hidden'); }
+            else { warning.classList.add('hidden'); }
+        }
+        function toggleCopilot() { document.getElementById('copilot-modal').classList.toggle('hidden'); }
+        function scanDoc() {
+            document.getElementById('extracted-date').classList.remove('hidden');
+            const btn = document.getElementById('inject-btn');
+            btn.className = "w-full bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-xl uppercase cursor-pointer";
+            btn.removeAttribute('disabled');
+        }
+        function injectLedger() { alert("መረጃው ወደ መዝገብ ላይ በራስ-ሰር ተጨምሯል!"); toggleCopilot(); }
+    </script>
+</body>
+</html>
