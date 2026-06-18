@@ -1,0 +1,1 @@
+import CopilotModal from '../components/CopilotModal';
