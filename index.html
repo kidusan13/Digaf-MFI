@@ -69,6 +69,26 @@
                 </button>
             </div>
 
+            <!-- NEW FEATURE: LIVE STATUS COUNTERS -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-between">
+                    <span class="text-xs font-bold text-slate-400 uppercase">🟢 Paid Status</span>
+                    <span id="count-paid" class="text-2xl font-extrabold text-emerald-600 mt-2">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-amber-100 shadow-sm flex flex-col justify-between">
+                    <span class="text-xs font-bold text-slate-400 uppercase">🟡 Renewal Status</span>
+                    <span id="count-renewal" class="text-2xl font-extrabold text-amber-500 mt-2">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm flex flex-col justify-between">
+                    <span class="text-xs font-bold text-slate-400 uppercase">🔴 No Response</span>
+                    <span id="count-noresponse" class="text-2xl font-extrabold text-red-500 mt-2">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-sm flex flex-col justify-between">
+                    <span class="text-xs font-bold text-slate-400 uppercase">🔵 Complete Status</span>
+                    <span id="count-complete" class="text-2xl font-extrabold text-indigo-600 mt-2">0</span>
+                </div>
+            </div>
+
             <!-- SEARCH & REGISTER CONTROL PANEL -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
@@ -188,13 +208,33 @@
             renderLedger();
         }
 
-        // --- RENDER ---
+        // --- RENDER & UPDATE COUNTERS ---
         function renderLedger() {
             const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
             const tbody = document.getElementById('ledger-rows');
             const sidebarCount = document.getElementById('sidebar-count');
             
+            // Counters variables
+            let paidCount = 0;
+            let renewalCount = 0;
+            let noResponseCount = 0;
+            let completeCount = 0;
+
+            // Calculate each status amount
+            records.forEach(r => {
+                if (r.status === "Paid") paidCount++;
+                if (r.status === "Renewal") renewalCount++;
+                if (r.status === "No Response") noResponseCount++;
+                if (r.status === "Complete") completeCount++;
+            });
+
+            // Update UI elements for counters
             sidebarCount.innerText = records.length;
+            document.getElementById('count-paid').innerText = paidCount;
+            document.getElementById('count-renewal').innerText = renewalCount;
+            document.getElementById('count-noresponse').innerText = noResponseCount;
+            document.getElementById('count-complete').innerText = completeCount;
+
             tbody.innerHTML = '';
 
             // Apply filter if there is a search query
@@ -258,7 +298,7 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Digaf_Client_Workflow_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `Digaf_Client_Counters_${new Date().toLocaleDateString()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
