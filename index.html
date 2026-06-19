@@ -12,7 +12,6 @@
 </head>
 <body class="bg-slate-100 flex h-screen antialiased">
 
-    <!-- SIDEBAR -->
     <div class="w-64 h-screen bg-slate-50 border-r border-slate-200 p-4 flex flex-col justify-between">
         <div>
             <div class="flex items-center space-x-2 mb-8 px-2">
@@ -34,9 +33,7 @@
         <div class="text-xs text-slate-400 px-2">Powered by Kidus • Control Panel</div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- HEADER -->
         <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <h1 class="text-sm font-bold tracking-wider text-slate-700 bg-purple-50 px-3 py-1 rounded border border-purple-100">WORKFLOW STATUS TRACKER</h1>
@@ -52,24 +49,21 @@
             </div>
         </header>
 
-        <!-- MAIN SECTION -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 space-y-6">
             
-            <!-- TOP NOTICE -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
                 <div>
                     <h2 class="text-sm font-bold text-purple-900 flex items-center space-x-2">
                         <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
                         <span>Client Workflow & Check Console</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">መረጃዎችን ለመፈተሽ ስም ይፈልጉ፤ ከዚያም ያለበትን ሁኔታ (Status) በቀጥታ ጠቅ በማድረግ ይቀይሩ።</p>
+                    <p class="text-xs text-slate-400 mt-1">መረጃዎችን ለመፈተሽ ስም ይፈልጉ፤ ተመሳሳይ ስም በድጋሚ መመዝገብ አይቻልም።</p>
                 </div>
                 <button onclick="clearData()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-medium border border-red-200 transition-all">
                     Reset Ledger
                 </button>
             </div>
 
-            <!-- NEW FEATURE: LIVE STATUS COUNTERS -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-between">
                     <span class="text-xs font-bold text-slate-400 uppercase">🟢 Paid Status</span>
@@ -89,10 +83,8 @@
                 </div>
             </div>
 
-            <!-- SEARCH & REGISTER CONTROL PANEL -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- 1. REGISTER BOX -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
                     <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider text-purple-700">➕ 1. Register New Client (አዲስ ደንበኛ መመዝገቢያ)</h3>
                     <div class="space-y-3">
@@ -115,7 +107,6 @@
                     </div>
                 </div>
 
-                <!-- 2. LIVE SEARCH BOX -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4 bg-purple-50/30">
                     <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider text-emerald-700">🔍 2. Check & Filter Ledger (መዝገብ መፈተኛ ሳጥን)</h3>
                     <div class="space-y-3">
@@ -124,14 +115,13 @@
                             <input type="text" id="search-input" oninput="filterLedger()" placeholder="ለመፈተሽ የደንበኛውን ስም እዚህ መጻፍ ይጀምሩ..." class="w-full px-3 py-2.5 bg-white border border-emerald-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-emerald-500 font-medium shadow-sm">
                         </div>
                         <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-500 leading-relaxed">
-                            💡 <span class="font-bold text-slate-700">እንዴት ይሰራል?</span> ሌላ ሰው ሲመጣ ስም እዚህ ይጽፋል፤ ስሙ ሲወጣ ያለበትን ሁኔታ ክሊክ አድርጎ ወደሚቀጥለው (ለምሳሌ ከ No Response ወደ Complete) በቀላሉ ያስተላልፋል።
+                            ⚠️ <span class="font-bold text-slate-700">የጥንቃቄ ማሳሰቢያ፦</span> አንድ ስም አስቀድሞ ከተመዘገበ ሲስተሙ በድጋሚ እንዳይመዘገብ በራሱ ይከላከላል።
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- REGISTERED CLIENTS TABLE -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                     <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">📋 Active Workflow Ledger</h3>
@@ -149,8 +139,7 @@
                             </tr>
                         </thead>
                         <tbody id="ledger-rows" class="divide-y divide-slate-200 text-xs text-slate-700">
-                            <!-- Data injected here -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
@@ -164,21 +153,31 @@
             renderLedger();
         });
 
-        // --- REGISTER ---
+        // --- REGISTER WITH DUPLICATE CHECK ---
         function registerClient() {
             const nameInput = document.getElementById('client-name');
             const statusSelect = document.getElementById('custom-status');
+            const inputName = nameInput.value.trim();
             
-            if (!nameInput.value.trim()) {
+            if (!inputName) {
                 alert("እባክህ መጀመሪያ የደንበኛ ስም አስገባ!");
                 return;
             }
 
             const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
+            
+            // NEW: Check if name already exists (case-insensitive)
+            const isDuplicate = records.some(r => r.name.toLowerCase() === inputName.toLowerCase());
+            
+            if (isDuplicate) {
+                alert(`⚠️ ስህተት፡ "${inputName}" የተባለው ደንበኛ አስቀድሞ በመዝገቡ ላይ ተመዝግቧል! ድጋሚ መመዝገብ አይቻልም።`);
+                return;
+            }
+
             const newRecord = {
                 id: 'client_' + Date.now() + Math.random().toString(36).substr(2, 4),
                 timestamp: new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString(),
-                name: nameInput.value.trim(),
+                name: inputName,
                 status: statusSelect.value
             };
             
@@ -214,13 +213,11 @@
             const tbody = document.getElementById('ledger-rows');
             const sidebarCount = document.getElementById('sidebar-count');
             
-            // Counters variables
             let paidCount = 0;
             let renewalCount = 0;
             let noResponseCount = 0;
             let completeCount = 0;
 
-            // Calculate each status amount
             records.forEach(r => {
                 if (r.status === "Paid") paidCount++;
                 if (r.status === "Renewal") renewalCount++;
@@ -228,7 +225,6 @@
                 if (r.status === "Complete") completeCount++;
             });
 
-            // Update UI elements for counters
             sidebarCount.innerText = records.length;
             document.getElementById('count-paid').innerText = paidCount;
             document.getElementById('count-renewal').innerText = renewalCount;
@@ -237,7 +233,6 @@
 
             tbody.innerHTML = '';
 
-            // Apply filter if there is a search query
             const filteredRecords = records.filter(r => r.name.toLowerCase().includes(currentSearchQuery));
 
             if (filteredRecords.length === 0) {
@@ -298,7 +293,7 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Digaf_Client_Counters_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `Digaf_Client_Track_${new Date().toLocaleDateString()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
