@@ -12,6 +12,7 @@
 </head>
 <body class="bg-slate-100 flex h-screen antialiased">
 
+    <!-- SIDEBAR -->
     <div class="w-64 h-screen bg-slate-50 border-r border-slate-200 p-4 flex flex-col justify-between">
         <div>
             <div class="flex items-center space-x-2 mb-8 px-2">
@@ -33,7 +34,9 @@
         <div class="text-xs text-slate-400 px-2">Powered by Kidus • Control Panel</div>
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- HEADER -->
         <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <h1 class="text-sm font-bold tracking-wider text-slate-700 bg-purple-50 px-3 py-1 rounded border border-purple-100">ADVANCED FINANCE TRACKER</h1>
@@ -52,21 +55,24 @@
             </div>
         </header>
 
+        <!-- MAIN SECTION -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 space-y-6">
             
+            <!-- TOP NOTICE -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
                 <div>
                     <h2 class="text-sm font-bold text-purple-900 flex items-center space-x-2">
                         <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
                         <span>Workflow Management Console</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">የደንበኞችን መረጃዎች በዝርዝር ይመዝግቡ፤ በቡድን ለመለየት ከታች ያሉትን ባለቀለም ካርዶች ይንኩ።</p>
+                    <p class="text-xs text-slate-400 mt-1">የደንበኞችን መረጃዎች በቡድን ለመለየት ከታች ያሉትን ባለቀለም ካርዶች ይንኩ።</p>
                 </div>
                 <button onclick="clearData()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-medium border border-red-200 transition-all">
                     Reset Ledger
                 </button>
             </div>
 
+            <!-- CLICKABLE STATUS COUNTERS -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div onclick="setStatusFilter('Paid')" id="card-Paid" class="bg-white p-4 rounded-xl border border-slate-200 hover:border-emerald-400 shadow-sm flex flex-col justify-between cursor-pointer transition-all select-none">
                     <span class="text-xs font-bold text-slate-400 uppercase flex items-center justify-between">
@@ -98,55 +104,12 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
-                <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider text-purple-700">🔮 Smart Finance Importer</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Client Full Name</label>
-                        <input type="text" id="client-name" placeholder="የደንበኛ ሙሉ ስም" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Phone Number</label>
-                        <input type="text" id="client-phone" placeholder="09..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Loan Amount (ETB)</label>
-                        <input type="number" id="loan-amount" placeholder="የብድር መጠን በብር" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Due Date</label>
-                        <input type="date" id="due-date" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Extended Remarks / Notes</label>
-                    <textarea id="client-notes" rows="2" placeholder="ተጨማሪ ማስታወሻዎችን እዚህ ይጻፉ... (ለምሳሌ: Renewal required for second round)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium"></textarea>
-                </div>
-
-                <div class="flex grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Status</label>
-                        <select id="custom-status" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-purple-500 font-medium text-slate-700">
-                            <option value="Paid">🟢 Paid</option>
-                            <option value="Renewal">🟡 Renewal</option>
-                            <option value="No Response">🔴 No Response</option>
-                            <option value="Complete">🔵 Complete</option>
-                        </select>
-                    </div>
-                    <div class="pt-5">
-                        <button onclick="registerClient()" class="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-2.5 rounded-lg shadow transition-all uppercase tracking-wider">
-                            Save to Ledger
-                        </button>
-                    </div>
-                </div>
-            </div>
-
+            <!-- SEARCH BAR -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <input type="text" id="search-input" oninput="filterLedger()" placeholder="የደንበኛ ስም ጽፈው ይፈልጉ... (ካርዶቹን ሲነኩ የሚመጣውን ማጣሪያ እዚህ ማጥፋት ይችላሉ)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
+                <input type="text" id="search-input" oninput="filterLedger()" placeholder="የደንበኛ ስም ጽፈው ይፈልጉ..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
             </div>
 
+            <!-- REGISTERED CLIENTS TABLE -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                     <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">📋 Active Digaf Ledger (የተመዘገቡ መረጃዎች)</h3>
@@ -163,7 +126,8 @@
                             </tr>
                         </thead>
                         <tbody id="ledger-rows" class="divide-y divide-slate-200 text-xs text-slate-700">
-                            </tbody>
+                            <!-- Data injected here -->
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -172,7 +136,7 @@
 
     <script>
         let currentSearchQuery = "";
-        let activeStatusFilter = ""; // Global state for card clicking
+        let activeStatusFilter = ""; 
 
         document.addEventListener('DOMContentLoaded', () => {
             renderLedger();
@@ -180,14 +144,12 @@
 
         // --- QUICK CARD FILTER LOGIC ---
         function setStatusFilter(status) {
-            // If clicking the same active card, toggle it off (Show all)
             if (activeStatusFilter === status) {
                 activeStatusFilter = "";
             } else {
                 activeStatusFilter = status;
             }
             
-            // Clear name search when switching card filters to avoid confusion
             document.getElementById('search-input').value = "";
             currentSearchQuery = "";
             
@@ -222,55 +184,6 @@
             }
         }
 
-        // --- REGISTER ---
-        function registerClient() {
-            const nameInput = document.getElementById('client-name');
-            const phoneInput = document.getElementById('client-phone');
-            const loanInput = document.getElementById('loan-amount');
-            const dateInput = document.getElementById('due-date');
-            const notesInput = document.getElementById('client-notes');
-            const statusSelect = document.getElementById('custom-status');
-            
-            const inputName = nameInput.value.trim();
-            if (!inputName) {
-                alert("እባክህ መጀመሪያ የደንበኛ ስም አስገባ!");
-                return;
-            }
-
-            const rawRecords = JSON.parse(localStorage.getItem('digaf_records') || '[]');
-            const isDuplicate = rawRecords.some(r => r.name.toLowerCase() === inputName.toLowerCase());
-            
-            if (isDuplicate) {
-                alert(`⚠️ ስህተት፡ "${inputName}" የተባለው ደንበኛ አስቀድሞ በመዝገቡ ላይ ይገኛል! ድጋሚ መመዝገብ አይቻልም።`);
-                return;
-            }
-
-            const currentTime = new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString();
-
-            const newRecord = {
-                id: 'client_' + Date.now(),
-                name: inputName,
-                phone: phoneInput.value.trim() || 'N/A',
-                loan: loanInput.value.trim() ? Number(loanInput.value).toLocaleString() + ' ETB' : 'N/A',
-                dueDate: dateInput.value || 'N/A',
-                notes: notesInput.value.trim() || 'No remarks',
-                status: statusSelect.value,
-                officer: "Kidusyared Liku",
-                timestamp: currentTime
-            };
-            
-            rawRecords.unshift(newRecord);
-            localStorage.setItem('digaf_records', JSON.stringify(rawRecords));
-            
-            // Clear inputs
-            nameInput.value = ''; phoneInput.value = ''; loanInput.value = ''; dateInput.value = ''; notesInput.value = '';
-            
-            // Reset filters to show the newly added client
-            activeStatusFilter = "";
-            updateCardUI();
-            renderLedger();
-        }
-
         // --- UPDATE STATUS LIVE ---
         function updateStatus(clientId, newStatus) {
             const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
@@ -287,10 +200,89 @@
         function filterLedger() {
             currentSearchQuery = document.getElementById('search-input').value.trim().toLowerCase();
             if (currentSearchQuery && activeStatusFilter) {
-                activeStatusFilter = ""; // Clear card filter if user types in search
+                activeStatusFilter = ""; 
                 updateCardUI();
             }
             renderLedger();
         }
 
-        //
+        // --- RENDER CONTROL & COUNTERS ---
+        function renderLedger() {
+            const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
+            const tbody = document.getElementById('ledger-rows');
+            
+            let paid = 0, renewal = 0, nores = 0, comp = 0;
+            records.forEach(r => {
+                if (r.status === "Paid") paid++;
+                if (r.status === "Renewal") renewal++;
+                if (r.status === "No Response") nores++;
+                if (r.status === "Complete") comp++;
+            });
+
+            document.getElementById('sidebar-count').innerText = records.length;
+            document.getElementById('count-paid').innerText = paid;
+            document.getElementById('count-renewal').innerText = renewal;
+            document.getElementById('count-noresponse').innerText = nores;
+            document.getElementById('count-complete').innerText = comp;
+
+            tbody.innerHTML = '';
+
+            let filtered = records;
+            if (activeStatusFilter) {
+                filtered = records.filter(r => r.status === activeStatusFilter);
+            } else if (currentSearchQuery) {
+                filtered = records.filter(r => r.name.toLowerCase().includes(currentSearchQuery) || r.phone.includes(currentSearchQuery));
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-400 italic">ምንም የተመዘገበ መረጃ አልተገኘም።</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-all";
+                
+                let badgeColor = "border-blue-200 text-blue-700 bg-blue-50";
+                if (r.status === "Paid") badgeColor = "border-emerald-200 text-emerald-700 bg-emerald-50";
+                if (r.status === "Renewal") badgeColor = "border-amber-200 text-amber-700 bg-amber-50";
+                if (r.status === "No Response") badgeColor = "border-red-200 text-red-700 bg-red-50";
+                if (r.status === "Complete") badgeColor = "border-indigo-200 text-indigo-700 bg-indigo-50";
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-[11px] text-slate-400 vertical-top">${r.timestamp}</td>
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-800 text-sm">${r.name}</div>
+                        <div class="text-[11px] text-slate-500 mt-1 space-y-0.5">
+                            <div>📞 Phone: <span class="font-medium text-slate-700">${r.phone || 'N/A'}</span></div>
+                            <div>💰 Loan: <span class="font-medium text-slate-700">${r.loan || 'N/A'}</span> | 📅 Due: <span class="font-medium text-slate-700">${r.dueDate || 'N/A'}</span></div>
+                            <div class="italic text-slate-400 mt-1">📝 Note: ${r.notes || ''}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-40 transition-all shadow-sm">
+                            <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
+                            <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
+                            <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
+                            <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
+                        </select>
+                    </td>
+                    <td class="px-6 py-4 font-medium text-purple-700 text-xs">${r.officer || 'Kidus'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function clearData() {
+            if(confirm("እርግጠኛ ነህ ሁሉንም መረጃዎች ማጥፋት ትፈልጋለህ?")) {
+                localStorage.removeItem('digaf_records');
+                activeStatusFilter = "";
+                document.getElementById('search-input').value = "";
+                currentSearchQuery = "";
+                updateCardUI();
+                renderLedger();
+            }
+        }
+    </script>
+</body>
+</html>
