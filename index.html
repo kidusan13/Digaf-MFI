@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digaf MFI - Custom Tracker Panel</title>
+    <title>Digaf MFI - Client Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap');
@@ -24,7 +24,7 @@
                     <p class="text-xs font-semibold text-slate-400 tracking-wider mb-2 px-2">OVERVIEW</p>
                     <div class="space-y-1">
                         <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium bg-purple-50 text-purple-700 border-l-4 border-purple-600">
-                            <span>Ledger Total Entries</span>
+                            <span>Total Registered Clients</span>
                             <span id="sidebar-count" class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
                         </button>
                     </div>
@@ -39,16 +39,13 @@
         <!-- HEADER -->
         <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <h1 class="text-sm font-bold tracking-wider text-slate-700 bg-purple-50 px-3 py-1 rounded border border-purple-100">CUSTOM DATA TRACKER</h1>
+                <h1 class="text-sm font-bold tracking-wider text-slate-700 bg-purple-50 px-3 py-1 rounded border border-purple-100">CLIENT STATUS TRACKER</h1>
                 <div class="flex items-center space-x-1 text-xs text-emerald-600 font-medium">
                     <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                    <span>Synced Listener Active</span>
+                    <span>System Active</span>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <div id="terminal-badge" class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold border border-emerald-200">
-                    Kidusyared Liku BOUND
-                </div>
                 <div class="bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 border border-slate-200">
                     Active Officer: <span class="text-purple-700">Kidusyared Liku</span>
                 </div>
@@ -61,46 +58,48 @@
                 <div>
                     <h2 class="text-sm font-bold text-purple-900 flex items-center space-x-2">
                         <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
-                        <span>Workflow Management Console</span>
+                        <span>Client Management Console</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">የኮፒ/ፓስት መረጃዎችን በፍጥነት ይመዝግቡ፤ በሰንጠረዡ ላይ ስታተስ በቀላሉ ይቀይሩ።</p>
+                    <p class="text-xs text-slate-400 mt-1">የደንበኛ ስም ብቻ ያስገቡ፤ ያለበትን ሁኔታ (Status) ይምረጡ ወይም ይቀይሩ።</p>
                 </div>
                 <button onclick="clearData()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-medium border border-red-200 transition-all">
                     Reset Ledger
                 </button>
             </div>
 
-            <!-- SMART IMPORTER & REGISTER -->
+            <!-- REGISTRATION FORM (NAME & STATUS ONLY) -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider">🔮 Smart Importer & Registration</h3>
-                <div class="space-y-3">
-                    <textarea id="importer-text" placeholder="እዚህ ላይ የደንበኛ መረጃዎችን ጻፍ ወይም ኮፒ (Paste) አድርገህ አምጣ..." class="w-full h-32 p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-mono resize-none"></textarea>
-                    
-                    <div class="flex flex-col md:flex-row md:items-center gap-4">
-                        <!-- Dropdown for Status Options -->
-                        <div class="flex-1">
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Initial Status (መጀመሪያ ሲመዘገብ)</label>
-                            <select id="custom-status" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-purple-500 font-medium text-slate-700">
-                                <option value="Paid">🟢 Paid</option>
-                                <option value="Renewal">🟡 Renewal</option>
-                                <option value="No Response">🔴 No Response</option>
-                                <option value="Complete">🔵 Complete</option>
-                            </select>
-                        </div>
-                        
-                        <div class="flex items-end pt-5">
-                            <button onclick="registerData()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-8 py-2.5 rounded-lg shadow transition-all uppercase tracking-wider">
-                                Save to Ledger
-                            </button>
-                        </div>
+                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider">👤 Register New Client</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Name Input Only -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Client Full Name (የደንበኛ ሙሉ ስም)</label>
+                        <input type="text" id="client-name" placeholder="የደንበኛውን ስም እዚህ ይጻፉ..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
                     </div>
+                    
+                    <!-- Status Dropdown -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Initial Status (የሂደት ሁኔታ)</label>
+                        <select id="custom-status" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-purple-500 font-medium text-slate-700">
+                            <option value="Paid">🟢 Paid</option>
+                            <option value="Renewal">🟡 Renewal</option>
+                            <option value="No Response">🔴 No Response</option>
+                            <option value="Complete">🔵 Complete</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end pt-2">
+                    <button onclick="registerClient()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-8 py-2.5 rounded-lg shadow transition-all uppercase tracking-wider">
+                        Save Client
+                    </button>
                 </div>
             </div>
 
-            <!-- REGISTERED DATA TABLE -->
+            <!-- REGISTERED CLIENTS TABLE -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">📋 Active Digaf Ledger (የተመዘገቡ መረጃዎች)</h3>
+                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">📋 Client Ledger</h3>
                     <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow transition-all flex items-center space-x-1">
                         <span>📥</span> <span>Export to Excel</span>
                     </button>
@@ -109,10 +108,9 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-100/70 border-b border-slate-200 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
-                                <th class="px-6 py-3">Timestamp</th>
-                                <th class="px-6 py-3">Client Details / Pasted Data</th>
-                                <th class="px-6 py-3 w-48">Change Status</th>
-                                <th class="px-6 py-3">Officer</th>
+                                <th class="px-6 py-3 w-1/3">Client Full Name</th>
+                                <th class="px-6 py-3 w-1/3">Current Status</th>
+                                <th class="px-6 py-3 w-1/3">Registration Time</th>
                             </tr>
                         </thead>
                         <tbody id="ledger-rows" class="divide-y divide-slate-200 text-xs text-slate-700">
@@ -124,104 +122,49 @@
         </main>
     </div>
 
-    <!-- FLOATING AI BUTTON -->
-    <button onclick="toggleCopilot()" class="fixed bottom-6 right-6 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-4 py-3 rounded-xl shadow-lg transition-all flex items-center space-x-2 z-40 animate-bounce">
-        <span>✨</span> <span>Ask Digaf AI</span>
-    </button>
-
-    <!-- AI COPILOT MODAL -->
-    <div id="copilot-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-[#0f172a] text-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col h-[65vh]">
-            <div class="p-4 bg-[#111827] border-b border-slate-800 flex items-center justify-between">
-                <span class="text-xs font-bold tracking-wide text-purple-400">🤖 DIGAF AI SEARCH ASSISTANT</span>
-                <button onclick="toggleCopilot()" class="text-slate-400 hover:text-white font-bold text-sm">✕</button>
-            </div>
-            <div class="flex-1 p-6 flex flex-col justify-between bg-[#0b0f19]">
-                <div class="space-y-4">
-                    <div class="bg-slate-800/40 border border-slate-800 p-4 rounded-xl text-xs text-slate-300">
-                        <p class="font-bold text-purple-300 mb-1">🤖 Digaf AI:</p>
-                        <p id="ai-response">ሰላም ኪዱስ! በዋናው ሳጥን ላይ የጻፍከውን ስም ወይም መረጃ በመዝገቡ ላይ መፈለግ እችላለሁ። ቃል ጽፈህ "Search Ledger" የሚለውን ተጫን።</p>
-                    </div>
-                </div>
-                <div class="flex space-x-2">
-                    <button onclick="scanOrSearch()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-3 rounded-xl uppercase transition-all">Search Ledger</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             renderLedger();
         });
 
-        function toggleCopilot() { document.getElementById('copilot-modal').classList.toggle('hidden'); }
-
-        // --- DIGAF AI SEARCH LOGIC ---
-        function scanOrSearch() {
-            const text = document.getElementById('importer-text').value.trim();
-            const aiResponse = document.getElementById('ai-response');
-
-            if(!text) {
-                aiResponse.innerText = "❌ ስህተት፡ እባክህ መጀመሪያ በSmart Importer ሳጥን ላይ የምትፈልገውን ቃል ወይም ደንበኛ ስም ጻፍ።";
-                return;
-            }
-
-            aiResponse.innerText = "⏳ መዝገቡን በAI በመፈለግ ላይ ነኝ...";
-            
-            setTimeout(() => {
-                const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
-                const matches = records.filter(r => r.details.toLowerCase().includes(text.toLowerCase()));
-                
-                if(matches.length > 0) {
-                    aiResponse.innerHTML = `<span class="text-emerald-400 font-bold">🎯 የተገኘ መረጃ (${matches.length})፦</span><br><br>` + 
-                    matches.map(m => `• [${m.status}] ${m.details} (${m.timestamp})`).join('<br>');
-                } else {
-                    aiResponse.innerText = `🔍 "${text}" የሚል መረጃ በሌጀሩ ላይ እስካሁን አልተመዘገበም።`;
-                }
-            }, 500);
-        }
-
-        // --- DATA REGISTRATION LOGIC ---
-        function registerData() {
-            const textInput = document.getElementById('importer-text');
+        // --- CLIENT REGISTRATION LOGIC ---
+        function registerClient() {
+            const nameInput = document.getElementById('client-name');
             const statusSelect = document.getElementById('custom-status');
             
-            if (!textInput.value.trim()) {
-                alert("እባክህ የምትመዘግበውን የደንበኛ መረጃ ፓስት አድርግ!");
+            if (!nameInput.value.trim()) {
+                alert("እባክህ የደንበኛውን ስም አስገባ!");
                 return;
             }
 
-            saveRecord(textInput.value.trim(), statusSelect.value);
-            textInput.value = '';
-        }
-
-        function saveRecord(details, status) {
             const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
             const newRecord = {
-                id: 'rec_' + Date.now() + Math.random().toString(36).substr(2, 4), // Unique ID for updating
+                id: 'client_' + Date.now() + Math.random().toString(36).substr(2, 4),
                 timestamp: new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString(),
-                details: details,
-                status: status,
-                officer: "Kidusyared Liku"
+                name: nameInput.value.trim(),
+                status: statusSelect.value
             };
+            
             records.unshift(newRecord);
             localStorage.setItem('digaf_records', JSON.stringify(records));
+            
+            nameInput.value = ''; // Clear input field
             renderLedger();
         }
 
-        // --- NEW FEATURE: DYNAMIC INLINE STATUS UPDATE ---
-        function updateStatus(recordId, newStatus) {
+        // --- UPDATE STATUS LIVE ON TABLE ---
+        function updateStatus(clientId, newStatus) {
             const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
-            const recordIndex = records.findIndex(r => r.id === recordId);
+            const clientIndex = records.findIndex(r => r.id === clientId);
             
-            if (recordIndex !== -1) {
-                records[recordIndex].status = newStatus;
+            if (clientIndex !== -1) {
+                records[clientIndex].status = newStatus;
                 localStorage.setItem('digaf_records', JSON.stringify(records));
-                renderLedger(); // Re-render to update badges and order
+                renderLedger();
             }
         }
 
+        // --- RENDER TABLE ---
         function renderLedger() {
             const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
             const tbody = document.getElementById('ledger-rows');
@@ -231,7 +174,7 @@
             tbody.innerHTML = '';
 
             if (records.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-400 italic">ምንም የተመዘገበ መረጃ የለም።</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-400 italic">ምንም የተመዘገበ ደንበኛ የለም።</td></tr>`;
                 return;
             }
 
@@ -239,7 +182,6 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition-all";
                 
-                // Color badges style mapping
                 let selectColorClass = "border-blue-200 text-blue-700 bg-blue-50";
                 if (r.status === "Paid") selectColorClass = "border-emerald-200 text-emerald-700 bg-emerald-50";
                 if (r.status === "Renewal") selectColorClass = "border-amber-200 text-amber-700 bg-amber-50";
@@ -247,24 +189,23 @@
                 if (r.status === "Complete") selectColorClass = "border-indigo-200 text-indigo-700 bg-indigo-50";
 
                 tr.innerHTML = `
-                    <td class="px-6 py-3 font-mono text-[11px] text-slate-400">${r.timestamp}</td>
-                    <td class="px-6 py-3 font-medium text-slate-800 whitespace-pre-line">${r.details}</td>
+                    <td class="px-6 py-3 font-semibold text-slate-800 text-sm">${r.name}</td>
                     <td class="px-6 py-3">
-                        <select onchange="updateStatus('${r.id}', this.value)" class="${selectColorClass} border rounded-lg text-xs font-bold px-2.5 py-1.5 focus:outline-none cursor-pointer w-full">
+                        <select onchange="updateStatus('${r.id}', this.value)" class="${selectColorClass} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-48">
                             <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
                             <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
                             <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
                             <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
                         </select>
                     </td>
-                    <td class="px-6 py-3 text-purple-600 font-semibold">${r.officer}</td>
+                    <td class="px-6 py-3 font-mono text-[11px] text-slate-400">${r.timestamp}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
         function clearData() {
-            if(confirm("እርግጠኛ ነህ ሁሉንም የተመዘገቡ መረጃዎች ማጥፋት ትፈልጋለህ?")) {
+            if(confirm("እርግጠኛ ነህ ሁሉንም ደንበኞች ማጥፋት ትፈልጋለህ?")) {
                 localStorage.removeItem('digaf_records');
                 renderLedger();
             }
@@ -273,23 +214,22 @@
         function exportToExcel() {
             const records = JSON.parse(localStorage.getItem('digaf_records') || '[]');
             if (records.length === 0) {
-                alert("የሚወርድ ምንም መረጃ የለም!");
+                alert("የሚወርድ መረጃ የለም!");
                 return;
             }
 
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Timestamp,Details,Status,Officer\n";
+            csvContent += "Client Name,Status,Registration Time\n";
 
             records.forEach(r => {
-                const cleanDetails = `"${r.details.replace(/"/g, '""').replace(/\n/g, ' ')}"`;
-                const row = `${r.timestamp},${cleanDetails},${r.status},${r.officer}`;
+                const row = `"${r.name.replace(/"/g, '""')}",${r.status},${r.timestamp}`;
                 csvContent += row + "\n";
             });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Digaf_MFI_Ledger_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `Kidus_Client_Ledger_${new Date().toLocaleDateString()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
