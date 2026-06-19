@@ -1,4 +1,3 @@
-HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,19 +44,19 @@ HTML
 
         <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 space-y-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div onclick="setStatusFilter('Paid')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm">
+                <div onclick="setStatusFilter('Paid')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:border-purple-300">
                     <span class="text-xs font-bold text-slate-400 uppercase">🟢 Paid</span>
                     <div id="count-paid" class="text-2xl font-extrabold text-emerald-600 mt-2">0</div>
                 </div>
-                <div onclick="setStatusFilter('Renewal')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm">
+                <div onclick="setStatusFilter('Renewal')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:border-purple-300">
                     <span class="text-xs font-bold text-slate-400 uppercase">🟡 Renewal</span>
                     <div id="count-renewal" class="text-2xl font-extrabold text-amber-500 mt-2">0</div>
                 </div>
-                <div onclick="setStatusFilter('No Response')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm">
+                <div onclick="setStatusFilter('No Response')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:border-purple-300">
                     <span class="text-xs font-bold text-slate-400 uppercase">🔴 No Response</span>
                     <div id="count-noresponse" class="text-2xl font-extrabold text-red-500 mt-2">0</div>
                 </div>
-                <div onclick="setStatusFilter('Complete')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm">
+                <div onclick="setStatusFilter('Complete')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer shadow-sm hover:border-purple-300">
                     <span class="text-xs font-bold text-slate-400 uppercase">🔵 Complete</span>
                     <div id="count-complete" class="text-2xl font-extrabold text-indigo-600 mt-2">0</div>
                 </div>
@@ -71,17 +70,13 @@ HTML
                     <option value="No Response">No Response</option>
                     <option value="Complete">Complete</option>
                 </select>
-                <select id="active-officer" class="border p-2 rounded-lg">
-                    <option value="Kidus">Kidus</option>
-                    <option value="Officer 2">Officer 2</option>
-                </select>
                 <button onclick="registerClient()" class="bg-purple-600 text-white px-6 rounded-lg font-bold">Save</button>
             </div>
 
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <table class="w-full text-left">
                     <thead class="bg-slate-50 text-xs text-slate-500 uppercase">
-                        <tr><th class="p-4">Name</th><th class="p-4">Status</th><th class="p-4">Officer</th><th class="p-4">Action</th></tr>
+                        <tr><th class="p-4">Name</th><th class="p-4">Status</th><th class="p-4">Action</th></tr>
                     </thead>
                     <tbody id="ledger-rows" class="divide-y divide-slate-200 text-sm"></tbody>
                 </table>
@@ -110,12 +105,11 @@ HTML
         async function registerClient() {
             const name = document.getElementById('client-name').value.trim();
             if(!name) return alert("Enter name!");
-            if (globalRecords.some(r => r.name.toLowerCase() === name.toLowerCase())) return alert("Duplicate name!");
             
             await fetch(`${SUPABASE_URL}/rest/v1/digaf_records`, {
                 method: 'POST',
                 headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: 'c_' + Date.now(), name, status: document.getElementById('custom-status').value, officer: document.getElementById('active-officer').value })
+                body: JSON.stringify({ id: 'c_' + Date.now(), name, status: document.getElementById('custom-status').value })
             });
             showToast("Client Registered!");
             document.getElementById('client-name').value = '';
@@ -132,7 +126,8 @@ HTML
         function setStatusFilter(s) { activeStatusFilter = s; renderLedger(); }
 
         function renderLedger() {
-            const filtered = activeStatusFilter ? globalRecords.filter(r => r.status === activeStatusFilter) : globalRecords;
+            const filtered = activeStatusFilter === "" ? globalRecords : globalRecords.filter(r => r.status === activeStatusFilter);
+            
             document.getElementById('count-paid').innerText = globalRecords.filter(r => r.status === 'Paid').length;
             document.getElementById('count-renewal').innerText = globalRecords.filter(r => r.status === 'Renewal').length;
             document.getElementById('count-noresponse').innerText = globalRecords.filter(r => r.status === 'No Response').length;
@@ -143,7 +138,6 @@ HTML
                 <tr>
                     <td class="p-4 font-bold">${r.name}</td>
                     <td class="p-4">${r.status}</td>
-                    <td class="p-4">${r.officer || '-'}</td>
                     <td class="p-4"><button onclick="deleteRecord('${r.id}')" class="text-red-500 font-bold hover:underline">Delete</button></td>
                 </tr>
             `).join('');
