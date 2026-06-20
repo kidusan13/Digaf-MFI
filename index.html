@@ -295,6 +295,12 @@
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
 
                     <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">📋 Active Workflow Ledger</h3>
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">📋 Active Workflow Ledger</h3>
+    <button onclick="toggleViewMode()" id="view-mode-btn" class="text-[10px] font-bold bg-purple-100 text-purple-700 px-3 py-1 rounded-lg hover:bg-purple-200">
+        ሁሉንም ታሪክ አሳይ
+    </button>
+</div>
 
                     <span id="filter-indicator" class="text-xs text-purple-600 font-bold bg-purple-50 px-2 py-1 rounded hidden"></span>
 
@@ -354,7 +360,12 @@
 
         let activeStatusFilter = ""; 
 
-
+let showAll = false;
+function toggleViewMode() {
+    showAll = !showAll;
+    document.getElementById('view-mode-btn').innerText = showAll ? "የዛሬውን ብቻ አሳይ" : "ሁሉንም ታሪክ አሳይ";
+    renderLedger();
+}
 
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -690,38 +701,39 @@ async function deleteRecord(clientId) {
 
         // --- RENDER SCREEN ---
 
-        function renderLedger() {
+       // በ renderLedger ተግባር ውስጥ:
+function renderLedger() {
+    const tbody = document.getElementById('ledger-rows');
+    
+    // 1. የዛሬን ቀን ለማግኘት
+    const today = new Date().toLocaleDateString(); 
 
-            const tbody = document.getElementById('ledger-rows');
+    // 2. የዛሬውን መረጃ ብቻ ለማጣራት
+    let filtered = globalRecords.filter(r => r.timestamp.includes(today));
 
-            let paid = 0, renewal = 0, nores = 0, comp = 0;
+    // 3. ከዛሬ ውጪ ያሉትን ካርዶች (Counters) ግን የድሮውንም ጨምሮ እንዲያሳይ ከፈለግክ
+    // ቆጣሪዎቹን ለየብቻ እናስላ (ሁሉንም መረጃ መሰረት በማድረግ)
+    let paid = 0, renewal = 0, nores = 0, comp = 0;
+    globalRecords.forEach(r => {
+        if (r.status === "Paid") paid++;
+        if (r.status === "Renewal") renewal++;
+        if (r.status === "No Response") nores++;
+        if (r.status === "Complete") comp++;
+    });
 
+    document.getElementById('count-paid').innerText = paid;
+    document.getElementById('count-renewal').innerText = renewal;
+    document.getElementById('count-noresponse').innerText = nores;
+    document.getElementById('count-complete').innerText = comp;
 
-
-            globalRecords.forEach(r => {
-
-                if (r.status === "Paid") paid++;
-
-                if (r.status === "Renewal") renewal++;
-
-                if (r.status === "No Response") nores++;
-
-                if (r.status === "Complete") comp++;
-
-            });
-
-
-
-            document.getElementById('sidebar-count').innerText = globalRecords.length;
-
-            document.getElementById('count-paid').innerText = paid;
-
-            document.getElementById('count-renewal').innerText = renewal;
-
-            document.getElementById('count-noresponse').innerText = nores;
-
-            document.getElementById('count-complete').innerText = comp;
-
+    // 4. አሁን ሰንጠረዡን (Table) በዛሬው መረጃ ብቻ እናጣራ
+    if (activeStatusFilter) {
+        filtered = filtered.filter(r => r.status === activeStatusFilter);
+    } else if (currentSearchQuery) {
+        filtered = filtered.filter(r => r.name.toLowerCase().includes(currentSearchQuery));
+    }
+    
+    // ... ቀጥለህ tbody.innerHTML = '' እና loop-ህን ቀጥል
 
 
             tbody.innerHTML = '';
