@@ -573,7 +573,29 @@
             }
 
         }
+// --- 🗑️ DELETE RECORD FROM SUPABASE ---
+async function deleteRecord(clientId) {
+    if (!confirm("እርግጠኛ ነዎት ይህንን ደንበኛ ከዝርዝሩ መሰረዝ ይፈልጋሉ?")) return;
 
+    try {
+        document.getElementById('sync-status').innerText = "Deleting...";
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/digaf_records?id=eq.${clientId}`, {
+            method: 'DELETE',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
+
+        if (!response.ok) throw new Error("Delete failed");
+        
+        // ዳታው ሲሰረዝ ዝርዝሩን እንደገና እንዲያወርድ እና ካርዶቹን እንዲያዘምን
+        await fetchRecordsFromCloud();
+    } catch (err) {
+        alert("መሰረዝ አልተቻለም!");
+        console.error(err);
+    }
+}
 
 
         // --- QUICK CARD FILTER ---
@@ -751,6 +773,7 @@
 
 
                 tr.innerHTML = `
+                
 
                     <td class="px-6 py-3">
 
@@ -773,6 +796,12 @@
                         </select>
 
                     </td>
+                    // በ tr.innerHTML ውስጥ መጨረሻ ላይ ይህንን ኮድ ጨምር:
+<td class="px-6 py-3">
+    <button onclick="deleteRecord('${r.id}')" class="text-red-500 hover:text-red-700 font-bold text-xs bg-red-50 px-2 py-1 rounded">
+        ❌ Delete
+    </button>
+</td>
 
                     <td class="px-6 py-3 text-slate-500 font-medium">
 
