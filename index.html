@@ -1015,6 +1015,18 @@
 
 
     // --- 🖥️ RENDER SCREEN ---
+    function filterLedger() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    
+    // በስም መፈለጊያ መስፈርቱ መሰረት መረጃውን ማጣራት
+    const filtered = globalRecords.filter(r => 
+        r.name.toLowerCase().includes(searchTerm)
+    );
+    
+    // ውጤቱን ማሳያ
+    renderLedger(filtered);
+    updateCounterCards(filtered);
+}
 
     function renderLedger(data = null) {
 
