@@ -806,55 +806,63 @@
 
     // --- ➕ REGISTER NEW CLIENT ---
 
-    async function registerClient() {
+   async function registerClient() {
     const nameInput = document.getElementById('client-name');
     const inputName = nameInput.value.trim();
-    
-    if (!inputName) { alert("እባክዎ መጀመሪያ የደንበኛ ስም ያስገቡ!"); return; }
+    const regButton = document.querySelector('button[onclick="registerClient()"]');
 
-    // 1. መደጋገሙን መፈተሽ (Check for duplicates)
-    const isDuplicate = globalRecords.some(record => 
-        record.name.toLowerCase() === inputName.toLowerCase()
-    );
+    if (!inputName) { alert("እባክዎ የደንበኛ ስም ያስገቡ!"); return; }
 
+    // 1. መደጋገሙን መፈተሽ
+    const isDuplicate = globalRecords.some(r => r.name.toLowerCase() === inputName.toLowerCase());
     if (isDuplicate) {
-        alert("ይህ ደንበኛ ቀድሞ ተመዝግቧል! እባክዎ ሌላ ስም ይሞክሩ።");
-        return; // እዚህ ላይ እናቆመዋለን፣ ወደ ዳታቤዝ አይላክም
+        alert("ይህ ደንበኛ ቀድሞ ተመዝግቧል!");
+        return;
     }
 
-    // 2. መደጋገም ከሌለ ብቻ ይቀጥላል
-    const statusSelect = document.getElementById('custom-status');
-    const officerSelect = document.getElementById('active-officer');
+    // 2. ተጠቃሚው አንዴ ከተጫነ በኋላ ቁልፉን መቆለፍ (Prevention)
+    regButton.disabled = true;
+    regButton.innerText = "Saving...";
 
     const now = new Date();
-    const currentTime = now.toLocaleTimeString('en-US', { hour12: false }) + ' ' + (now.getMonth() + 1).toString().padStart(2, '0') + '/' + now.getDate().toString().padStart(2, '0') + '/' + now.getFullYear();
+    const currentTime = now.toLocaleTimeString('en-US', { hour12: false }) + ' ' + 
+                        (now.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                        now.getDate().toString().padStart(2, '0') + '/' + now.getFullYear();
 
     const newRecord = {
-        id: 'client_' + Date.now() + Math.random().toString(36).substr(2, 4),
+        id: 'client_' + Date.now(), // ID በሰከንድ ልዩነት እንዲፈጠር
         name: inputName,
-        status: statusSelect.value,
-        created_by: officerSelect.value,
-        updated_by: officerSelect.value,
+        status: document.getElementById('custom-status').value,
+        created_by: document.getElementById('active-officer').value,
         timestamp: currentTime
     };
 
     try {
-        await fetch(`${SUPABASE_URL}/rest/v1/digaf_records`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/digaf_records`, {
             method: 'POST',
             headers: { 
                 'apikey': SUPABASE_ANON_KEY, 
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(newRecord)
         });
-        nameInput.value = ''; 
-        await fetchRecordsFromCloud(); // አዲስ መረጃውን ከዳታቤዝ መልሶ ለማምጣት
-    } catch (err) { alert("መመዝገብ አልተቻለም!"); }
+
+        if (response.ok) {
+            nameInput.value = '';
+            // 3. መረጃው ከመደራረቡ በፊት የድሮውን ማጽዳት
+            globalRecords = []; 
+            await fetchRecordsFromCloud(); 
+        } else {
+            alert("መመዝገብ አልተቻለም፣ እንደገና ይሞክሩ።");
+        }
+    } catch (err) {
+        alert("የኢንተርኔት ግንኙነት ችግር ተፈጥሯል!");
+    } finally {
+        regButton.disabled = false;
+        regButton.innerText = "Save & Add to Cloud Database";
+    }
 }
-
-
 
     // --- 🔄 UPDATE STATUS ---
 
