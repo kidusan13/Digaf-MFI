@@ -1028,40 +1028,87 @@
     updateCounterCards(filtered);
 }
 
-   // ይህንን ተግባር በኮድህ ውስጥ ባለው የድሮው renderLedger ቦታ ላይ ቀይረው
-function renderLedger(data = null) {
-    const tbody = document.getElementById('ledger-rows');
-    const recordsToRender = data || globalRecords;
-    
-    // የጠረጴዛውን ስርአት በመቀየር በምትኩ ግልጽ የካርድ ስርአት መፍጠር
-  // ይህንን ክፍል ብቻ ቀይረው
-tbody.innerHTML = recordsToRender.map(r => `
-    <tr class="border-b border-slate-200 hover:bg-slate-50 transition-all">
-        <td style="padding: 32px 40px;">
-            <div class="font-bold text-slate-800 text-xl">${r.name}</div>
-            <div class="text-sm text-slate-400 font-mono mt-3">${r.timestamp}</div>
-        </td>
-        
-        <td style="padding: 32px 40px;">
-            <select onchange="updateStatus('${r.id}', this.value)" 
-                class="bg-white border-2 border-slate-200 rounded-2xl px-10 py-5 text-lg font-bold text-slate-700 cursor-pointer hover:border-purple-400 shadow-sm">
-                <option value="Renewal" ${r.status==='Renewal'?'selected':''}>🟡 Renewal</option>
-                <option value="Paid" ${r.status==='Paid'?'selected':''}>🟢 Paid</option>
-                <option value="No Response" ${r.status==='No Response'?'selected':''}>🔴 No Response</option>
-                <option value="Complete" ${r.status==='Complete'?'selected':''}>🔵 Complete</option>
-            </select>
-        </td>
+    function renderLedger(data = null) {
 
-        <td style="padding: 32px 40px;" class="text-right">
-            <div class="text-lg font-bold text-slate-600 mb-4">👤 ${r.created_by}</div>
-            <button onclick="deleteRecord('${r.id}')" class="text-slate-400 hover:text-red-600 p-4 rounded-2xl hover:bg-red-50 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-            </button>
-        </td>
-    </tr>
-`).join('');
+        const tbody = document.getElementById('ledger-rows');
+
+        const recordsToRender = data || globalRecords;
+
+        
+
+        tbody.innerHTML = '';
+
+        if (recordsToRender.length === 0) {
+
+            tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-400 italic">ምንም መረጃ አልተገኘም።</td></tr>`;
+
+            return;
+
+        }
+
+
+
+        recordsToRender.forEach(r => {
+
+            const tr = document.createElement('tr');
+
+            tr.className = "hover:bg-slate-50/80 transition-all border-b border-slate-100";
+
+            
+
+            let badgeColor = "border-blue-200 text-blue-700 bg-blue-50";
+
+            if (r.status === "Paid") badgeColor = "border-emerald-200 text-emerald-700 bg-emerald-50";
+
+            if (r.status === "Renewal") badgeColor = "border-amber-200 text-amber-700 bg-amber-50";
+
+            if (r.status === "No Response") badgeColor = "border-red-200 text-red-700 bg-red-50";
+
+            if (r.status === "Complete") badgeColor = "border-indigo-200 text-indigo-700 bg-indigo-50";
+
+
+
+            tr.innerHTML = `
+
+                <td class="px-6 py-3"><div class="font-bold text-slate-800 text-sm">${r.name}</div></td>
+
+                <td class="px-6 py-3">
+
+                    <div class="flex items-center space-x-2">
+
+                        <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-32">
+
+                            <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
+
+                            <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
+
+                            <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
+
+                            <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
+
+                        </select>
+
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-400 hover:text-red-600 font-bold text-xs px-2">❌</button>
+
+                    </div>
+
+                </td>
+
+                <td class="px-6 py-3 text-slate-500 font-medium text-[11px]">
+
+                    <div>By: <span class="font-bold text-slate-800">${r.created_by || 'System'}</span></div>
+
+                    <div class="text-slate-400 font-mono">${r.timestamp}</div>
+
+                </td>
+
+            `;
+
+            tbody.appendChild(tr);
+
+        });
+
+    }
 
 </script>
 
