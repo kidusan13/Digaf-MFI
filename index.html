@@ -376,7 +376,7 @@
             
             document.getElementById('sync-status').innerText = "Cloud Live Sync Active";
             
-            // በነባሪ (Default) የዛሬውን መረጃ አሳይ
+            // ሲከፈት በነባሪ የዛሬውን አሳይ
             filterByPreset('today');
         } catch (err) {
             console.error(err);
@@ -492,6 +492,16 @@
             filtered = globalRecords.filter(r => r.timestamp.includes(yesterdayStr));
         }
         
+        updateCounterCards(filtered);
+        renderLedger(filtered);
+    }
+
+    // --- 🔘 STATUS FILTER ---
+    function setStatusFilter(status) {
+        let filtered = globalRecords;
+        if (status) {
+            filtered = globalRecords.filter(r => r.status === status);
+        }
         updateCounterCards(filtered);
         renderLedger(filtered);
     }
