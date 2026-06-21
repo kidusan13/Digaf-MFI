@@ -688,138 +688,73 @@ async function deleteRecord(clientId) {
 
 
 
-        // --- RENDER SCREEN ---
-
-        function renderLedger() {
-
-            const tbody = document.getElementById('ledger-rows');
-
-            let paid = 0, renewal = 0, nores = 0, comp = 0;
-
-
-
-            globalRecords.forEach(r => {
-
-                if (r.status === "Paid") paid++;
-
-                if (r.status === "Renewal") renewal++;
-
-                if (r.status === "No Response") nores++;
-
-                if (r.status === "Complete") comp++;
-
-            });
-
-
-
-            document.getElementById('sidebar-count').innerText = globalRecords.length;
-
-            document.getElementById('count-paid').innerText = paid;
-
-            document.getElementById('count-renewal').innerText = renewal;
-
-            document.getElementById('count-noresponse').innerText = nores;
-
-            document.getElementById('count-complete').innerText = comp;
-
-
-
-            tbody.innerHTML = '';
-
-
-
-            let filtered = globalRecords;
-
-            if (activeStatusFilter) {
-
-                filtered = globalRecords.filter(r => r.status === activeStatusFilter);
-
-            } else if (currentSearchQuery) {
-
-                filtered = globalRecords.filter(r => r.name.toLowerCase().includes(currentSearchQuery));
-
-            }
-
-
-
-            if (filtered.length === 0) {
-
-                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-400 italic">ምንም መረጃ አልተገኘም።</td></tr>`;
-
-                return;
-
-            }
-
-
-
-            filtered.forEach(r => {
-
-                const tr = document.createElement('tr');
-
-                tr.className = "hover:bg-slate-50/80 transition-all border-b border-slate-100";
-
-                
-
-                let badgeColor = "border-blue-200 text-blue-700 bg-blue-50";
-
-                if (r.status === "Paid") badgeColor = "border-emerald-200 text-emerald-700 bg-emerald-50";
-
-                if (r.status === "Renewal") badgeColor = "border-amber-200 text-amber-700 bg-amber-50";
-
-                if (r.status === "No Response") badgeColor = "border-red-200 text-red-700 bg-red-50";
-
-                if (r.status === "Complete") badgeColor = "border-indigo-200 text-indigo-700 bg-indigo-50";
-
-
-
-                tr.innerHTML = `
-                
-
-                    <td class="px-6 py-3">
-
-                        <div class="font-bold text-slate-800 text-sm">${r.name}</div>
-
-                    </td>
-
-                    <td class="px-6 py-3">
-
-                        <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-40 transition-all shadow-sm">
-
-                            <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
-
-                            <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
-
-                            <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
-
-                            <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
-
-                        </select>
-
-                    </td>
-    
-<td class="px-6 py-3">
-    <button onclick="deleteRecord('${r.id}')" class="text-red-500 hover:text-red-700 font-bold text-xs bg-red-50 px-2 py-1 rounded">
-        ❌ Delete
-    </button>
-</td>
-
-                    <td class="px-6 py-3 text-slate-500 font-medium">
-
-                        <div class="text-slate-600 text-[11px]">By: <span class="font-bold text-slate-800">${r.created_by || 'System'}</span></div>
-
-                        <div class="text-purple-700 font-semibold mt-0.5">Edit: ${r.updated_by || 'System'}</div>
-
-                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">${r.timestamp}</div>
-
-                    </td>
-
-                `;
-
-                tbody.appendChild(tr);
-
-            });
-
-        }
+       // --- RENDER SCREEN ---
+function renderLedger() {
+    const tbody = document.getElementById('ledger-rows');
+    let paid = 0, renewal = 0, nores = 0, comp = 0;
+
+    globalRecords.forEach(r => {
+        if (r.status === "Paid") paid++;
+        if (r.status === "Renewal") renewal++;
+        if (r.status === "No Response") nores++;
+        if (r.status === "Complete") comp++;
+    });
+
+    document.getElementById('sidebar-count').innerText = globalRecords.length;
+    document.getElementById('count-paid').innerText = paid;
+    document.getElementById('count-renewal').innerText = renewal;
+    document.getElementById('count-noresponse').innerText = nores;
+    document.getElementById('count-complete').innerText = comp;
+
+    tbody.innerHTML = '';
+
+    let filtered = globalRecords;
+    if (activeStatusFilter) {
+        filtered = globalRecords.filter(r => r.status === activeStatusFilter);
+    } else if (currentSearchQuery) {
+        filtered = globalRecords.filter(r => r.name.toLowerCase().includes(currentSearchQuery));
+    }
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-400 italic">ምንም መረጃ አልተገኘም።</td></tr>`;
+        return;
+    }
+
+    filtered.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 transition-all border-b border-slate-100";
+        
+        let badgeColor = "border-blue-200 text-blue-700 bg-blue-50";
+        if (r.status === "Paid") badgeColor = "border-emerald-200 text-emerald-700 bg-emerald-50";
+        if (r.status === "Renewal") badgeColor = "border-amber-200 text-amber-700 bg-amber-50";
+        if (r.status === "No Response") badgeColor = "border-red-200 text-red-700 bg-red-50";
+        if (r.status === "Complete") badgeColor = "border-indigo-200 text-indigo-700 bg-indigo-50";
+
+        // እዚህ ጋር ነው 3 አምዶች ብቻ እንዲሆኑ የተስተካከለው
+        tr.innerHTML = `
+            <td class="px-6 py-3">
+                <div class="font-bold text-slate-800 text-sm">${r.name}</div>
+            </td>
+            <td class="px-6 py-3">
+                <div class="flex items-center space-x-2">
+                    <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-32">
+                        <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
+                        <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
+                        <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
+                        <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
+                    </select>
+                    <button onclick="deleteRecord('${r.id}')" class="text-red-400 hover:text-red-600 font-bold text-xs px-2">❌</button>
+                </div>
+            </td>
+            <td class="px-6 py-3 text-slate-500 font-medium text-[11px]">
+                <div>By: <span class="font-bold text-slate-800">${r.created_by || 'System'}</span></div>
+                <div class="text-purple-700">Edit: ${r.updated_by || 'System'}</div>
+                <div class="text-slate-400 font-mono">${r.timestamp}</div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
     </script>
 
