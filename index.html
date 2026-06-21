@@ -1035,15 +1035,15 @@ function renderLedger(data = null) {
     
     // የጠረጴዛውን ስርአት በመቀየር በምትኩ ግልጽ የካርድ ስርአት መፍጠር
     tbody.innerHTML = recordsToRender.map(r => `
-        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-            <td class="px-6 py-4">
-                <div class="font-bold text-slate-800">${r.name}</div>
-                <div class="text-[10px] text-slate-400 font-mono mt-0.5">${r.timestamp}</div>
+        <tr class="border-b border-slate-200 hover:bg-slate-50 transition-all">
+            <td style="padding: 24px 32px;">
+                <div class="font-bold text-slate-800 text-lg">${r.name}</div>
+                <div class="text-sm text-slate-400 font-mono mt-2">${r.timestamp}</div>
             </td>
             
-            <td class="px-6 py-4">
+            <td style="padding: 24px 32px;">
                 <select onchange="updateStatus('${r.id}', this.value)" 
-                    class="appearance-none bg-white border border-slate-200 rounded-lg px-4 py-2 text-xs font-bold text-slate-700 cursor-pointer hover:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    class="bg-white border-2 border-slate-200 rounded-2xl px-8 py-4 text-base font-bold text-slate-700 cursor-pointer hover:border-purple-400 shadow-sm">
                     <option value="Renewal" ${r.status==='Renewal'?'selected':''}>🟡 Renewal</option>
                     <option value="Paid" ${r.status==='Paid'?'selected':''}>🟢 Paid</option>
                     <option value="No Response" ${r.status==='No Response'?'selected':''}>🔴 No Response</option>
@@ -1051,10 +1051,10 @@ function renderLedger(data = null) {
                 </select>
             </td>
 
-            <td class="px-6 py-4 text-right">
-                <div class="text-xs font-semibold text-slate-500 mb-1">${r.created_by}</div>
-                <button onclick="deleteRecord('${r.id}')" class="text-slate-300 hover:text-red-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <td style="padding: 24px 32px;" class="text-right">
+                <div class="text-base font-bold text-slate-600 mb-3">👤 ${r.created_by}</div>
+                <button onclick="deleteRecord('${r.id}')" class="text-slate-400 hover:text-red-600 p-3 rounded-xl hover:bg-red-50 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </button>
