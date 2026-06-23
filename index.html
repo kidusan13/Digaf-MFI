@@ -1,26 +1,14 @@
 <!DOCTYPE html>
 
-
-
 <html lang="en">
-
-
 
 <head>
 
-
-
     <meta charset="UTF-8">
-
-
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-
     <title>Digaf MFI - Smart Finance Importer</title>
-
-
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -48,19 +36,25 @@
 
 <body class="bg-slate-100 flex h-screen antialiased">
 
-
-
-
-
-
-
     <!-- SIDEBAR -->
 
-
+<div id="login-overlay" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-96 text-center">
+        <h2 class="text-2xl font-bold text-slate-800 mb-6">Welcome to Digaf MFI</h2>
+        <p class="text-sm text-slate-500 mb-6">እባክዎ መጀመሪያ ስምዎን ይምረጡ</p>
+        <select id="login-officer-select" class="w-full mb-6 px-4 py-3 bg-slate-100 rounded-lg font-bold text-purple-700 border">
+            <option value="">-- ስምዎን ይምረጡ --</option>
+            <option value="Kidus">Kidus</option>
+            <option value="Samuel">Samuel</option>
+            <option value="Suraphel">Suraphel</option>
+            <option value="Natnael">Natnael</option>
+            <option value="Ezana">Ezana</option>
+            <option value="Zewdneh">Zewdneh</option>
+        </select>
+        <button onclick="loginUser()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-lg hover:bg-purple-700">Login</button>
+    </div>
 
     <div class="w-64 h-screen bg-slate-50 border-r border-slate-200 p-4 flex flex-col justify-between">
-
-
 
         <div>
 
@@ -697,6 +691,27 @@
 
 
 <script>
+    // 1. መግቢያ (Login) ተግባር
+    function loginUser() {
+        const selectedOfficer = document.getElementById('login-officer-select').value;
+        if (!selectedOfficer) { alert("እባክዎ ስምዎን ይምረጡ!"); return; }
+
+        localStorage.setItem('activeOfficer', selectedOfficer);
+        document.getElementById('active-officer').value = selectedOfficer;
+        document.getElementById('login-overlay').style.display = 'none';
+    }
+
+    // 2. ገጹ ሲጫን የነበረውን ስም ማረጋገጫ
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedOfficer = localStorage.getItem('activeOfficer');
+        if (!savedOfficer) {
+            document.getElementById('login-overlay').style.display = 'flex';
+        } else {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('active-officer').value = savedOfficer;
+        }
+        fetchRecordsFromCloud();
+    });
 
     // --- ⚠️ የአንተ የ Supabase ኮዶች ⚠️ ---
 
