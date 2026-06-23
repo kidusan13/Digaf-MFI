@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+
+
+
+<html lang="en">
+
+
+
+<head>
+
+
+
+    <meta charset="UTF-8">
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    <title>Digaf MFI - Smart Finance Importer</title>
+
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+    <style>
+
+
+
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+
+
+    </style>
+
+
+
+</head>
+
+
+
+<body class="bg-slate-100 flex h-screen antialiased">
+
+
+
+
+
+
+
+    <!-- SIDEBAR -->
+
+
+
+    <div class="w-64 h-screen bg-slate-50 border-r border-slate-200 p-4 flex flex-col justify-between">
+
+
+
+        <div>
+
+
+
+            <div class="flex items-center space-x-2 mb-8 px-2">
+
+
+
+                <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">D</div>
+
+
+
+                <span class="text-xl font-bold text-slate-800">Digaf <span class="text-xs text-purple-600">MFI</span></span>
+
+
+
+            </div>
+
+
+
+            <nav class="space-y-6">
+
+
+
+                <div>
+
+
+
+                    <p class="text-xs font-semibold text-slate-400 tracking-wider mb-2 px-2">OVERVIEW</p>
+
+
+
+                    <div class="space-y-1">
+
+
+
+                        <button onclick="setStatusFilter('')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium bg-purple-50 text-purple-700 border-l-4 border-purple-600">
+
+
+
+                            <span>Total Registered Clients</span>
+
+
+
+                            <span id="sidebar-count" class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+
+
+
+                        </button>
+
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </nav>
+
+
+
+        </div>
+
+
+
+        <div class="text-xs text-slate-400 px-2">Powered by Kidus • Control Panel</div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- MAIN CONTENT -->
+
+
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+
+
+
+        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between">
+
+
+
+            <div class="flex items-center space-x-4">
+
+
+
+                <h1 class="text-sm font-bold tracking-wider text-slate-700 bg-purple-50 px-3 py-1 rounded border border-purple-100">SMART FINANCE IMPORTER</h1>
+
+
+
+                <div class="flex items-center space-x-1 text-xs text-emerald-600 font-medium">
+
+
+
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+
+
+
+                    <span id="sync-status">Cloud Live Sync Active</span>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+            <div class="flex items-center space-x-2">
+
+
+
+                <label class="text-xs font-bold text-slate-400 uppercase">Active Officer:</label>
+
+
+
+                <select id="active-officer" class="bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-semibold text-purple-700 border border-slate-200 focus:outline-none focus:border-purple-500 cursor-pointer">
+
+
+
+                    <option value="Kidus">Kidus</option>
+
+
+
+                    <option value="Samuel">Samuel</option>
+
+
+
+                    <option value="Suraphel">Suraphel</option>
+
+
+
+                    <option value="Natnael">Natnael</option>
+
+                    
+
+                    <option value="Ezana">Ezana</option>
+
+                    
+
+                    <option value="Zewdneh">Zewdneh</option>
+
+
+
+                </select>
+
+
+
+            </div>
+
+
+
+        </header>
+
+
+
+
+
+
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 space-y-6">
+
+
+
+            
+
+
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
+
+
+
+                <div>
+
+
+
+                    <h2 class="text-sm font-bold text-purple-900 flex items-center space-x-2">
+
+
+
+                        <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+
+
+
+                        <span>Client Workflow & Check Console</span>
+
+
+
+                    </h2>
+
+
+
+                    <p class="text-xs text-slate-400 mt-1">መረጃዎችን ለመመዝገብም ሆነ ለመለወጥ መጀመሪያ ከላይ ስምዎን መምረጥዎን ያረጋግጡ።</p>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <!-- COUNTER CARDS -->
+
+
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+
+
+                <div onclick="setStatusFilter('Paid')" id="card-Paid" class="bg-white p-4 rounded-xl border border-slate-200 hover:border-emerald-400 shadow-sm flex flex-col justify-between cursor-pointer transition-all select-none">
+
+
+
+                    <span class="text-xs font-bold text-slate-400 uppercase flex items-center justify-between">
+
+
+
+                        <span>🟢 Paid Status</span>
+
+
+
+                        <span id="active-dot-Paid" class="w-2 h-2 bg-emerald-500 rounded-full hidden"></span>
+
+
+
+                    </span>
+
+
+
+                    <span id="count-paid" class="text-2xl font-extrabold text-emerald-600 mt-2">0</span>
+
+
+
+                </div>
+
+
+
+                <div onclick="setStatusFilter('Renewal')" id="card-Renewal" class="bg-white p-4 rounded-xl border border-slate-200 hover:border-amber-400 shadow-sm flex flex-col justify-between cursor-pointer transition-all select-none">
+
+
+
+                    <span class="text-xs font-bold text-slate-400 uppercase flex items-center justify-between">
+
+
+
+                        <span>🟡 Renewal Status</span>
+
+
+
+                        <span id="active-dot-Renewal" class="w-2 h-2 bg-amber-500 rounded-full hidden"></span>
+
+
+
+                    </span>
+
+
+
+                    <span id="count-renewal" class="text-2xl font-extrabold text-amber-500 mt-2">0</span>
+
+
+
+                </div>
+
+
+
+                <div onclick="setStatusFilter('No Response')" id="card-NoResponse" class="bg-white p-4 rounded-xl border border-slate-200 hover:border-red-400 shadow-sm flex flex-col justify-between cursor-pointer transition-all select-none">
+
+
+
+                    <span class="text-xs font-bold text-slate-400 uppercase flex items-center justify-between">
+
+
+
+                        <span>🔴 No Response</span>
+
+
+
+                        <span id="active-dot-NoResponse" class="w-2 h-2 bg-red-500 rounded-full hidden"></span>
+
+
+
+                    </span>
+
+
+
+                    <span id="count-noresponse" class="text-2xl font-extrabold text-red-500 mt-2">0</span>
+
+
+
+                </div>
+
+
+
+                <div onclick="setStatusFilter('Complete')" id="card-Complete" class="bg-white p-4 rounded-xl border border-slate-200 hover:border-indigo-400 shadow-sm flex flex-col justify-between cursor-pointer transition-all select-none">
+
+
+
+                    <span class="text-xs font-bold text-slate-400 uppercase flex items-center justify-between">
+
+
+
+                        <span>🔵 Complete Status</span>
+
+
+
+                        <span id="active-dot-Complete" class="w-2 h-2 bg-indigo-500 rounded-full hidden"></span>
+
+
+
+                    </span>
+
+
+
+                    <span id="count-complete" class="text-2xl font-extrabold text-indigo-600 mt-2">0</span>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <!-- FORMS SECTION -->
+
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+
+                
+
+
+
+                <!-- SINGLE CLIENT REGISTRATION FORM -->
+
+
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+
+
+
+                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider text-purple-700">➕ 1. Register New Client (አዲስ ደንበኛ መመዝገቢያ)</h3>
+
+
+
+                    <div class="grid grid-cols-1 gap-3">
+
+
+
+                        <div>
+
+
+
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Client Full Name</label>
+
+
+
+                            <input type="text" id="client-name" placeholder="የደንበኛውን ሙሉ ስም ያስገቡ..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-purple-500 font-medium">
+
+
+
+                        </div>
+
+
+
+                        <div>
+
+
+
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Set Status</label>
+
+
+
+                            <select id="custom-status" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-purple-500 font-medium text-slate-700">
+
+
+
+                                <option value="Renewal" selected>🟡 Renewal</option>
+
+
+
+                                <option value="Paid">🟢 Paid</option>
+
+
+
+                                <option value="No Response">🔴 No Response</option>
+
+
+
+                                <option value="Complete">🔵 Complete</option>
+
+
+
+                            </select>
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+                    <button onclick="registerClient()" class="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-2.5 rounded-lg shadow transition-all uppercase tracking-wider mt-2">
+
+
+
+                        Save & Add to Cloud Database
+
+
+
+                    </button>
+
+
+
+                </div>
+
+
+
+                <!-- SEARCH / FILTER CONSOLE -->
+
+
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4 bg-purple-50/30">
+
+
+
+                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider text-emerald-700">🔍 2. Check & Filter Ledger (መዝገብ መፈተኛ ሳጥን)</h3>
+
+
+
+                    <div class="space-y-3">
+
+
+
+                        <div>
+
+
+
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Type Client Name to Check</label>
+
+
+
+                            <input type="text" id="search-input" oninput="filterLedger()" placeholder="ለመፈተሽ የደንበኛውን ስም እዚህ መጻፍ ይጀምሩ..." class="w-full px-3 py-2.5 bg-white border border-emerald-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-emerald-500 font-medium shadow-sm">
+
+
+
+                        </div>
+
+
+
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-500 leading-relaxed">
+
+
+
+                            💡 <span class="font-bold text-slate-700">ፈጣን ዘዴ፦</span> ከላይ ያሉትን ባለቀለም የስታተስ ካርዶች በመጫን ብቻ በዚያ ግሩፕ ውስጥ ያሉትን ደንበኞች ለይተው ማየት ይችላሉ።
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100">
+
+    <div>
+
+        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">From Date</label>
+
+        <input type="date" id="date-from" onchange="filterByDate()" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:border-purple-500 outline-none">
+
+    </div>
+
+    <div>
+
+        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">To Date</label>
+
+        <input type="date" id="date-to" onchange="filterByDate()" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:border-purple-500 outline-none">
+
+    </div>
+
+</div>
+
+                    <div class="flex space-x-2 mt-4">
+
+    <button onclick="filterByPreset('today')" class="bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-purple-200">ዛሬ (Today)</button>
+
+    <button onclick="filterByPreset('yesterday')" class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-200">ትናንት (Yesterday)</button>
+
+    <button onclick="filterByPreset('all')" class="bg-slate-50 text-slate-500 px-3 py-1.5 rounded-lg text-xs font-bold border">ሁሉም (All)</button>
+
+</div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+            <!-- LEDGER TABLE -->
+
+
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+
+
+
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+
+
+
+                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">📋 Active Workflow Ledger</h3>
+
+
+
+                    <span id="filter-indicator" class="text-xs text-purple-600 font-bold bg-purple-50 px-2 py-1 rounded hidden"></span>
+
+
+
+                </div>
+
+
+
+                <div class="overflow-x-auto">
+
+
+
+                    <table class="w-full text-left border-collapse">
+
+
+
+                        <thead>
+
+
+
+                            <tr class="bg-slate-100/70 border-b border-slate-200 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+
+
+
+                                <th class="px-6 py-3">Client Name</th>
+
+
+
+                                <th class="px-6 py-3">Current Status</th>
+
+
+
+                                <th class="px-6 py-3">Logs (By & Time)</th>
+
+
+
+                            </tr>
+
+
+
+                        </thead>
+
+
+
+                        <tbody id="ledger-rows" class="divide-y divide-slate-200 text-xs text-slate-700">
+
+
+
+                            <tr><td colspan="3" class="px-6 py-8 text-center text-slate-400 italic">መረጃዎች ከክላውድ ላይ እየተጫኑ ነው...</td></tr>
+
+
+
+                        </tbody>
+
+
+
+                    </table>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </main>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- SUPABASE SYNC LOGIC -->
+
+
+
+<script>
+
+    // --- ⚠️ የአንተ የ Supabase ኮዶች ⚠️ ---
+
+    const SUPABASE_URL = "https://logercqzvkwfibaumcvf.supabase.co"; 
+
+    const SUPABASE_ANON_KEY = "sb_publishable_aWSqUZw9NaQDS6yDcwJhJw_79ZERzZ4";
+
+
+
+    let globalRecords = [];
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        fetchRecordsFromCloud();
+
+    });
+
+
+
+    // --- 📥 FETCH FROM SUPABASE ---
+
+    async function fetchRecordsFromCloud() {
+
+        try {
+
+            document.getElementById('sync-status').innerText = "Loading data...";
+
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/digaf_records?select=*`, {
+
+                method: 'GET',
+
+                headers: {
+
+                    'apikey': SUPABASE_ANON_KEY,
+
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+
+                }
+
+            });
+
+            if (!response.ok) throw new Error("Fetch failed");
+
+            globalRecords = await response.json();
+
+            
+
+            globalRecords.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+            
+
+            document.getElementById('sync-status').innerText = "Cloud Live Sync Active";
+
+            
+
+            // ሲከፈት በነባሪ የዛሬውን አሳይ
+
+            filterByPreset('today');
+
+        } catch (err) {
+
+            console.error(err);
+
+            document.getElementById('sync-status').innerText = "Sync Connection Error!";
+
+        }
+
+    }
+
+
+
+    // --- 🔢 UPDATE COUNTER CARDS ---
+
+    function updateCounterCards(data) {
+
+        let paid = 0, renewal = 0, nores = 0, comp = 0;
+
+        data.forEach(r => {
+
+            if (r.status === "Paid") paid++;
+
+            if (r.status === "Renewal") renewal++;
+
+            if (r.status === "No Response") nores++;
+
+            if (r.status === "Complete") comp++;
+
+        });
+
+
+
+        document.getElementById('count-paid').innerText = paid;
+
+        document.getElementById('count-renewal').innerText = renewal;
+
+        document.getElementById('count-noresponse').innerText = nores;
+
+        document.getElementById('count-complete').innerText = comp;
+
+        document.getElementById('sidebar-count').innerText = data.length;
+
+    }
+
+
+
+    // --- ➕ REGISTER NEW CLIENT ---
+
+   // --- ➕ REGISTER NEW CLIENT ---
+async function registerClient() {
+    const nameInput = document.getElementById('client-name');
+    const statusSelect = document.getElementById('custom-status');
+    const officerSelect = document.getElementById('active-officer');
+    const regButton = document.querySelector('button[onclick="registerClient()"]');
+
+    const inputName = nameInput.value.trim();
+    if (!inputName) { alert("እባክዎ መጀመሪያ የደንበኛ ስም ያስገቡ!"); return; }
+
+    // 1. መደጋገሙን መፈተሽ (Check if client already exists locally)
+    const isDuplicate = globalRecords.some(r => r.name.toLowerCase() === inputName.toLowerCase());
+    if (isDuplicate) {
+        alert("ይህ ደንበኛ ቀድሞ ተመዝግቧል!");
+        return;
+    }
+
+    // 2. ተጠቃሚው ብዙ ጊዜ እንዳይጫን ቁልፉን መቆለፍ
+    regButton.disabled = true;
+    regButton.innerText = "Saving...";
+
+    const now = new Date();
+    const currentTime = now.toLocaleTimeString('en-US', { hour12: false }) + ' ' + (now.getMonth() + 1).toString().padStart(2, '0') + '/' + now.getDate().toString().padStart(2, '0') + '/' + now.getFullYear();
+
+    const newRecord = {
+        id: 'client_' + Date.now(), // ID በሰከንድ ልዩነት እንዲፈጠር
+        name: inputName,
+        status: statusSelect.value,
+        created_by: officerSelect.value,
+        updated_by: officerSelect.value,
+        timestamp: currentTime
+    };
+
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/digaf_records`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(newRecord)
+        });
+
+        if (response.ok) {
+            nameInput.value = ''; 
+            await fetchRecordsFromCloud(); // አዲስ መረጃውን ከዳታቤዝ መልሶ ማምጣት
+        } else {
+            throw new Error("መመዝገብ አልተቻለም");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("መመዝገብ አልተቻለም! እባክዎ እንደገና ይሞክሩ።");
+    } finally {
+        regButton.disabled = false;
+        regButton.innerText = "Save & Add to Cloud Database";
+    }
+}
+
+    // --- 🔄 UPDATE STATUS ---
+
+    async function updateStatus(clientId, newStatus) {
+
+        const officerSelect = document.getElementById('active-officer');
+
+        const now = new Date();
+
+        const currentTime = now.toLocaleTimeString('en-US', { hour12: false }) + ' ' + (now.getMonth() + 1).toString().padStart(2, '0') + '/' + now.getDate().toString().padStart(2, '0') + '/' + now.getFullYear();
+
+        
+
+        try {
+
+            await fetch(`${SUPABASE_URL}/rest/v1/digaf_records?id=eq.${clientId}`, {
+
+                method: 'PATCH',
+
+                headers: {
+
+                    'apikey': SUPABASE_ANON_KEY,
+
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+
+                    'Content-Type': 'application/json'
+
+                },
+
+                body: JSON.stringify({ status: newStatus, updated_by: officerSelect.value, timestamp: currentTime })
+
+            });
+
+            await fetchRecordsFromCloud();
+
+        } catch (err) { alert("መለወጥ አልተቻለም!"); }
+
+    }
+
+
+
+    // --- 🗑️ DELETE RECORD ---
+
+    async function deleteRecord(clientId) {
+
+        if (!confirm("እርግጠኛ ነዎት መሰረዝ ይፈልጋሉ?")) return;
+
+        try {
+
+            await fetch(`${SUPABASE_URL}/rest/v1/digaf_records?id=eq.${clientId}`, {
+
+                method: 'DELETE',
+
+                headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+
+            });
+
+            await fetchRecordsFromCloud();
+
+        } catch (err) { alert("መሰረዝ አልተቻለም!"); }
+
+    }
+
+
+
+    // --- 🗓️ DATE PRESET FILTER ---
+
+    function filterByPreset(type) {
+
+        const today = new Date();
+
+        const yesterday = new Date();
+
+        yesterday.setDate(today.getDate() - 1);
+
+
+
+        const formatDate = (d) => {
+
+            const mm = (d.getMonth() + 1).toString().padStart(2, '0');
+
+            const dd = d.getDate().toString().padStart(2, '0');
+
+            const yy = d.getFullYear();
+
+            return `${mm}/${dd}/${yy}`;
+
+        };
+
+        
+
+        const todayStr = formatDate(today);
+
+        const yesterdayStr = formatDate(yesterday);
+
+        let filtered = globalRecords;
+
+
+
+        if (type === 'today') {
+
+            filtered = globalRecords.filter(r => r.timestamp.includes(todayStr));
+
+        } else if (type === 'yesterday') {
+
+            filtered = globalRecords.filter(r => r.timestamp.includes(yesterdayStr));
+
+        }
+
+        
+
+        updateCounterCards(filtered);
+
+        renderLedger(filtered);
+
+    }
+
+
+
+    // --- 🔘 STATUS FILTER ---
+
+    function setStatusFilter(status) {
+
+        let filtered = globalRecords;
+
+        if (status) {
+
+            filtered = globalRecords.filter(r => r.status === status);
+
+        }
+
+        updateCounterCards(filtered);
+
+        renderLedger(filtered);
+
+    }
+
+
+
+    // --- 🖥️ RENDER SCREEN ---
+    function filterLedger() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    
+    // በስም መፈለጊያ መስፈርቱ መሰረት መረጃውን ማጣራት
+    const filtered = globalRecords.filter(r => 
+        r.name.toLowerCase().includes(searchTerm)
+    );
+    
+    // ውጤቱን ማሳያ
+    renderLedger(filtered);
+    updateCounterCards(filtered);
+}
+
+    function renderLedger(data = null) {
+
+        const tbody = document.getElementById('ledger-rows');
+
+        const recordsToRender = data || globalRecords;
+
+        
+
+        tbody.innerHTML = '';
+
+        if (recordsToRender.length === 0) {
+
+            tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-400 italic">ምንም መረጃ አልተገኘም።</td></tr>`;
+
+            return;
+
+        }
+
+
+
+        recordsToRender.forEach(r => {
+
+            const tr = document.createElement('tr');
+
+            tr.className = "hover:bg-slate-50/80 transition-all border-b border-slate-100";
+
+            
+
+            let badgeColor = "border-blue-200 text-blue-700 bg-blue-50";
+
+            if (r.status === "Paid") badgeColor = "border-emerald-200 text-emerald-700 bg-emerald-50";
+
+            if (r.status === "Renewal") badgeColor = "border-amber-200 text-amber-700 bg-amber-50";
+
+            if (r.status === "No Response") badgeColor = "border-red-200 text-red-700 bg-red-50";
+
+            if (r.status === "Complete") badgeColor = "border-indigo-200 text-indigo-700 bg-indigo-50";
+
+
+
+            tr.innerHTML = `
+
+                <td class="px-6 py-3"><div class="font-bold text-slate-800 text-sm">${r.name}</div></td>
+
+                <td class="px-6 py-3">
+
+                    <div class="flex items-center space-x-2">
+
+                        <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-32">
+
+                            <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
+
+                            <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
+
+                            <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
+
+                            <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
+
+                        </select>
+
+                        <button onclick="deleteRecord('${r.id}')" class="text-red-400 hover:text-red-600 font-bold text-xs px-2">❌</button>
+
+                    </div>
+
+                </td>
+
+                <td class="px-6 py-3 text-slate-500 font-medium text-[11px]">
+
+                    <div>By: <span class="font-bold text-slate-800">${r.created_by || 'System'}</span></div>
+
+                    <div class="text-slate-400 font-mono">${r.timestamp}</div>
+
+                </td>
+                
+
+            `;
+
+            tbody.appendChild(tr);
+
+        });
+
+    }
+
+</script>
+
+</body>
+
+</html>
