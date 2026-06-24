@@ -4,14 +4,9 @@
 
 <html lang="en">
 
-
-
 <head>
 
-
-
     <meta charset="UTF-8">
-
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +42,22 @@
 
 
 <body class="bg-slate-100 flex h-screen antialiased">
+    <div id="login-overlay" class="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-96 text-center">
+        <h2 class="text-xl font-bold text-purple-900 mb-6">Welcome to Digaf MFI</h2>
+        <p class="text-sm text-slate-500 mb-4">እባክዎ በመቀጠል ስምዎን ይምረጡ</p>
+        <select id="login-officer" class="w-full mb-6 px-4 py-3 bg-slate-100 rounded-lg font-bold text-purple-700">
+            <option value="">ስምዎን ይምረጡ...</option>
+            <option value="Kidus">Kidus</option>
+            <option value="Samuel">Samuel</option>
+            <option value="Suraphel">Suraphel</option>
+            <option value="Natnael">Natnael</option>
+            <option value="Ezana">Ezana</option>
+            <option value="Zewdneh">Zewdneh</option>
+        </select>
+        <button onclick="loginOfficer()" class="w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700">ወደ ሲስተሙ ግቡ</button>
+    </div>
+</div>
 
 
 
@@ -697,6 +708,22 @@
 
 
 <script>
+    let loggedInUser = "";
+
+function loginOfficer() {
+    const selector = document.getElementById('login-officer');
+    if (!selector.value) {
+        alert("እባክዎ ስምዎን ይምረጡ!");
+        return;
+    }
+    loggedInUser = selector.value;
+    document.getElementById('login-overlay').style.display = 'none';
+    
+    // የላይኛውን Header's Select Box መደበቅ ወይም በተመረጠው ስም መቆለፍ
+    const headerSelect = document.getElementById('active-officer');
+    headerSelect.value = loggedInUser;
+    headerSelect.disabled = true; // ኦፊሰሩ ስሙን እንዳይቀይር መቆለፍ
+}
 
     // --- ⚠️ የአንተ የ Supabase ኮዶች ⚠️ ---
 
