@@ -739,18 +739,24 @@ function loginOfficer() {
 
     // --- 🚀 INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. መረጃውን ከክላውድ መጀመሪያ ያምጣ
     fetchRecordsFromCloud();
 
-    // ቀድሞ የተመረጠ ኦፊሰር ካለ በራስ-ሰር ይግባ (Session Persistence)
+    // 2. ኦፊሰር መግባቱን ይፈትሽ
     const savedOfficer = localStorage.getItem('loggedInOfficer');
+    const loginOverlay = document.getElementById('login-overlay');
+    const headerSelect = document.getElementById('active-officer');
+
     if (savedOfficer) {
-        // የHeader Select ሳጥኑን ያዘምናል
-        const headerSelect = document.getElementById('active-officer');
-        headerSelect.value = savedOfficer;
-        headerSelect.disabled = true; // ኦፊሰሩ እንዳይቀይረው ይቆልፈዋል
+        // ኦፊሰር ካለ ሎጊን ገጹን ይደብቀው
+        loginOverlay.style.display = 'none';
         
-        // የሎጊን ገጹን ይደብቀዋል
-        document.getElementById('login-overlay').style.display = 'none';
+        // Header ላይ ያለውን ስም ያስተካክለው
+        headerSelect.value = savedOfficer;
+        headerSelect.disabled = true; 
+    } else {
+        // ኦፊሰር ከሌለ ሎጊን ገጹ እንዲታይ ያድርገው
+        loginOverlay.style.display = 'flex';
     }
 });
 
