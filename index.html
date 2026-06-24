@@ -139,7 +139,9 @@
 
         </div>
 
-
+<button onclick="logoutOfficer()" class="w-full text-left text-xs font-bold text-red-500 hover:text-red-700 mt-4 px-2">
+    🚪 Logout
+</button>
 
         <div class="text-xs text-slate-400 px-2">Powered by Kidus • Control Panel</div>
 
@@ -727,6 +729,15 @@ function loginOfficer() {
     const headerSelect = document.getElementById('active-officer');
     headerSelect.value = selector.value;
     headerSelect.disabled = true;
+}
+    function logoutOfficer() {
+    if (confirm("ከሲስተሙ መውጣት ይፈልጋሉ?")) {
+        // ስሙን ከማስታወሻ ይሰርዙት
+        localStorage.removeItem('loggedInOfficer');
+        
+        // ገጹን ሪፍሬሽ ያድርጉት
+        window.location.reload();
+    }
 }
 
     // --- ⚠️ የአንተ የ Supabase ኮዶች ⚠️ ---
