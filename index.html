@@ -926,42 +926,37 @@ async function registerClient() {
 
     // --- 🔄 UPDATE STATUS ---
 
-    async function updateStatus(clientId, newStatus) {
+   async function updateStatus(clientId, newStatus) {
+    const officerSelect = document.getElementById('active-officer');
+    let remark = "";
 
-        const officerSelect = document.getElementById('active-officer');
-
-        const now = new Date();
-
-        const currentTime = now.toLocaleTimeString('en-US', { hour12: false }) + ' ' + (now.getMonth() + 1).toString().padStart(2, '0') + '/' + now.getDate().toString().padStart(2, '0') + '/' + now.getFullYear();
-
-        
-
-        try {
-
-            await fetch(`${SUPABASE_URL}/rest/v1/digaf_records?id=eq.${clientId}`, {
-
-                method: 'PATCH',
-
-                headers: {
-
-                    'apikey': SUPABASE_ANON_KEY,
-
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-
-                    'Content-Type': 'application/json'
-
-                },
-
-                body: JSON.stringify({ status: newStatus, updated_by: officerSelect.value, timestamp: currentTime })
-
-            });
-
-            await fetchRecordsFromCloud();
-
-        } catch (err) { alert("መለወጥ አልተቻለም!"); }
-
+    // "Paid" ሲመረጥ ብቻ አስተያየት መጠየቅ
+    if (newStatus === 'Paid') {
+        remark = prompt("ለዚህ ክፍያ ተጨማሪ መረጃ/አስተያየት ይጻፉ (አማራጭ):", "");
+        if (remark === null) return; // Cancel ከተባለ መረጃውን አይቀይርም
     }
 
+    const now = new Date();
+    const currentTime = now.toLocaleTimeString('en-US', { hour12: false }) + ' ' + (now.getMonth() + 1).toString().padStart(2, '0') + '/' + now.getDate().toString().padStart(2, '0') + '/' + now.getFullYear();
+
+    try {
+        await fetch(`${SUPABASE_URL}/rest/v1/digaf_records?id=eq.${clientId}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                status: newStatus, 
+                updated_by: officerSelect.value, 
+                timestamp: currentTime,
+                remark: remark // አዲሱን አስተያየት ወደ ዳታቤዝ ይልካል
+            })
+        });
+        await fetchRecordsFromCloud();
+    } catch (err) { alert("መለወጥ አልተቻለም!"); }
+}
 
 
     // --- 🗑️ DELETE RECORD ---
@@ -1116,41 +1111,29 @@ async function registerClient() {
 
 
 
-            tr.innerHTML = `
-
-                <td class="px-6 py-3"><div class="font-bold text-slate-800 text-sm">${r.name}</div></td>
-
-                <td class="px-6 py-3">
-
-                    <div class="flex items-center space-x-2">
-
-                        <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-32">
-
-                            <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
-
-                            <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
-
-                            <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
-
-                            <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
-
-                        </select>
-
-                        <button onclick="deleteRecord('${r.id}')" class="text-red-400 hover:text-red-600 font-bold text-xs px-2">❌</button>
-
-                    </div>
-
-                </td>
-
-                <td class="px-6 py-3 text-slate-500 font-medium text-[11px]">
-
-                    <div>By: <span class="font-bold text-slate-800">${r.created_by || 'System'}</span></div>
-
-                    <div class="text-slate-400 font-mono">${r.timestamp}</div>
-
-                </td>
-
-            `;
+          // ... (ቀዳሚው ኮድ)
+tr.innerHTML = `
+    <td class="px-6 py-3">
+        <div class="font-bold text-slate-800 text-sm">${r.name}</div>
+        ${r.remark ? `<div class="text-[10px] text-emerald-600 font-bold italic">💡 ${r.remark}</div>` : ''}
+    </td>
+    <td class="px-6 py-3">
+        <div class="flex items-center space-x-2">
+            <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-32">
+                <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
+                <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
+                <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
+                <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
+            </select>
+            <button onclick="deleteRecord('${r.id}')" class="text-red-400 hover:text-red-600 font-bold text-xs px-2">❌</button>
+        </div>
+    </td>
+    <td class="px-6 py-3 text-slate-500 font-medium text-[11px]">
+        <div>By: <span class="font-bold text-slate-800">${r.created_by || 'System'}</span></div>
+        <div class="text-slate-400 font-mono">${r.timestamp}</div>
+    </td>
+`;
+// ... (ቀሪው ኮድ)
 
             tbody.appendChild(tr);
 
