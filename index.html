@@ -716,13 +716,17 @@ function loginOfficer() {
         alert("እባክዎ ስምዎን ይምረጡ!");
         return;
     }
-    loggedInUser = selector.value;
+    
+    // በ localStorage ያስቀምጡት
+    localStorage.setItem('loggedInOfficer', selector.value);
+    
+    // Overlay-ውን ይደብቁ
     document.getElementById('login-overlay').style.display = 'none';
     
-    // የላይኛውን Header's Select Box መደበቅ ወይም በተመረጠው ስም መቆለፍ
+    // Header-ውን ያስተካክሉ
     const headerSelect = document.getElementById('active-officer');
-    headerSelect.value = loggedInUser;
-    headerSelect.disabled = true; // ኦፊሰሩ ስሙን እንዳይቀይር መቆለፍ
+    headerSelect.value = selector.value;
+    headerSelect.disabled = true;
 }
 
     // --- ⚠️ የአንተ የ Supabase ኮዶች ⚠️ ---
@@ -739,27 +743,26 @@ function loginOfficer() {
 
     // --- 🚀 INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. መረጃውን ከክላውድ መጀመሪያ ያምጣ
-    fetchRecordsFromCloud();
-
-    // 2. ኦፊሰር መግባቱን ይፈትሽ
+    // 1. መጀመሪያ ኦፊሰር መኖሩን ይፈትሹ (ይህ ከ fetchRecordsFromCloud በፊት ይሁን)
     const savedOfficer = localStorage.getItem('loggedInOfficer');
     const loginOverlay = document.getElementById('login-overlay');
     const headerSelect = document.getElementById('active-officer');
 
     if (savedOfficer) {
-        // ኦፊሰር ካለ ሎጊን ገጹን ይደብቀው
+        // ኦፊሰር ካለ ሎጊን ገጹን ወዲያውኑ ይደብቀው
         loginOverlay.style.display = 'none';
         
         // Header ላይ ያለውን ስም ያስተካክለው
         headerSelect.value = savedOfficer;
         headerSelect.disabled = true; 
     } else {
-        // ኦፊሰር ከሌለ ሎጊን ገጹ እንዲታይ ያድርገው
+        // ኦፊሰር ከሌለ ሎጊን ገጹን ያሳየው
         loginOverlay.style.display = 'flex';
     }
-});
 
+    // 2. ከዚያ በኋላ መረጃውን ከክላውድ ያምጣ
+    fetchRecordsFromCloud();
+});
 
 
     // --- 📥 FETCH FROM SUPABASE ---
