@@ -737,11 +737,22 @@ function loginOfficer() {
 
 
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // --- 🚀 INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+    fetchRecordsFromCloud();
 
-        fetchRecordsFromCloud();
-
-    });
+    // ቀድሞ የተመረጠ ኦፊሰር ካለ በራስ-ሰር ይግባ (Session Persistence)
+    const savedOfficer = localStorage.getItem('loggedInOfficer');
+    if (savedOfficer) {
+        // የHeader Select ሳጥኑን ያዘምናል
+        const headerSelect = document.getElementById('active-officer');
+        headerSelect.value = savedOfficer;
+        headerSelect.disabled = true; // ኦፊሰሩ እንዳይቀይረው ይቆልፈዋል
+        
+        // የሎጊን ገጹን ይደብቀዋል
+        document.getElementById('login-overlay').style.display = 'none';
+    }
+});
 
 
 
