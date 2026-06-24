@@ -190,6 +190,7 @@
 
 
             </div>
+          
 
 
 
@@ -740,8 +741,16 @@ function loginOfficer() {
 
 
     document.addEventListener('DOMContentLoaded', () => {
+    fetchRecordsFromCloud();
 
-        fetchRecordsFromCloud();
+    // ቀድሞ የተመረጠ ኦፊሰር ካለ በራስ-ሰር ይግባ
+    const savedOfficer = localStorage.getItem('loggedInOfficer');
+    if (savedOfficer) {
+        const headerSelect = document.getElementById('active-officer');
+        headerSelect.value = savedOfficer;
+        headerSelect.disabled = true;
+        document.getElementById('login-overlay').style.display = 'none';
+    }
 
     });
 
