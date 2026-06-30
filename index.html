@@ -1075,45 +1075,38 @@ async function updateRemark(clientId, remarkValue) {
         renderLedger(filtered);
 
     }
-    // 1. መረጃውን የሚይዝ ተለዋዋጭ
+  function exportToCSV() {
+    let dataToExport = globalRecords; 
 
-let currentFilteredRecords = globalRecords; 
-
-
-
-// 2. በቁልፎቹ (Today, Yesterday, All) አማካኝነት መረጃውን የሚለይ ፋንክሽን
-
-// 1. መረጃውን የሚይዝ ተለዋዋጭ
-let currentFilteredRecords = globalRecords; 
-
-// 2. በቁልፎቹ (Today, Yesterday, All) አማካኝነት መረጃውን የሚለይ ፋንክሽን
-function filterByDate(type) {
-    if (type === 'today') {
-        const todayStr = new Date().toISOString().split('T')[0];
-        currentFilteredRecords = globalRecords.filter(r => r.timestamp.includes(todayStr));
-    } else if (type === 'all') {
-        currentFilteredRecords = globalRecords;
+    if (dataToExport.length === 0) {
+        alert("ምንም መረጃ አልተገኘም!");
+        return;
     }
-    // ... ለ yesterday እንደዚሁ ይጨመራል ...
-    renderLedger(currentFilteredRecords); // ሰንጠረዡን ያዘምናል
-}
 
-// 3. የተጣራውን መረጃ ብቻ ኤክስፖርት የሚያደርግ ፋንክሽን
-function exportToCSV() {
-    const dataToExport = currentFilteredRecords; // ሁልጊዜ የተጣራውን ብቻ ይወስዳል
-    if (dataToExport.length === 0) { alert("ምንም ዳታ አልተገኘም!"); return; }
+    // 1. የአማርኛ ፊደላት እንዲታዩ UTF-8 BOM መጨመር
+    let csvContent = "\uFEFF"; 
+    csvContent += "Client Name,Status,Created By,Last Updated By,Timestamp\n";
 
-    let csvContent = "\uFEFFClient Name,Status,Created By,Last Updated By,Timestamp\n";
     dataToExport.forEach(r => {
-        csvContent += `"${r.name}","${r.status}","${r.created_by}","${r.updated_by || ''}","${r.timestamp}"\n`;
+        // የኮማ ችግርን ለመከላከል መረጃውን በ引号 (quotes) መጠቅለል
+        let row = `"${r.name}","${r.status}","${r.created_by}","${r.updated_by || ''}","${r.timestamp}"`;
+        csvContent += row + "\n";
     });
+
+    // 2. በፋይል ስሙ ውስጥ የዛሬን ቀን ማካተት
+    const fileName = `Digaf_Report_${new Date().toISOString().split('T')[0]}.csv`;
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "Digaf_Report.csv";
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
 }
+
     // --- 🖥️ RENDER SCREEN ---
     function filterLedger() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase();
