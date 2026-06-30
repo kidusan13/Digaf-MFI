@@ -1075,6 +1075,35 @@ async function updateRemark(clientId, remarkValue) {
         renderLedger(filtered);
 
     }
+    // 1. መረጃውን የሚይዝ ተለዋዋጭ
+
+let currentFilteredRecords = globalRecords; 
+
+
+
+// 2. በቁልፎቹ (Today, Yesterday, All) አማካኝነት መረጃውን የሚለይ ፋንክሽን
+
+function filterByDate(type) {
+
+    if (type === 'today') {
+
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        currentFilteredRecords = globalRecords.filter(r => r.timestamp.includes(todayStr));
+
+    } else if (type === 'all') {
+
+        currentFilteredRecords = globalRecords;
+
+    }
+
+    // ... ለ yesterday እንደዚሁ ይጨመራል ...
+
+    renderLedger(currentFilteredRecords); // ሰንጠረዡን ያዘምናል
+
+}
+
+
   function exportToCSV() {
     let dataToExport = globalRecords; 
 
