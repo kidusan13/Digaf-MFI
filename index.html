@@ -1055,6 +1055,23 @@ async function updateRemark(clientId, remarkValue) {
         renderLedger(filtered);
 
     }
+    function filterByDate(dateType) {
+    let filtered;
+    const today = new Date().toLocaleDateString();
+    
+    if (dateType === 'Today') {
+        filtered = allClients.filter(c => c.date === today);
+    } else if (dateType === 'Yesterday') {
+        // የትናንቱን ቀን ማስላት
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        filtered = allClients.filter(c => c.date === yesterday.toLocaleDateString());
+    } else {
+        filtered = allClients; // ሁሉም
+    }
+
+    updateDisplay(filtered); // እዚህ ጋር ነው መረጃው ለኤክስፖርት የሚዘጋጀው
+}
 
 
 
@@ -1075,36 +1092,35 @@ async function updateRemark(clientId, remarkValue) {
         renderLedger(filtered);
 
     }
-  function exportToCSV() {
-    let dataToExport = globalRecords; 
+    let currentFilteredData = []; // ይህ በስክሪኑ ላይ የሚታየው መረጃ ነው
 
-    if (dataToExport.length === 0) {
-        alert("ምንም መረጃ አልተገኘም!");
+// መረጃውን ከ Firestore ስታመጣ ወይም ስታጣራ (Filter) ይህንን አዘምን
+function updateDisplay(filteredData) {
+    currentFilteredData = filteredData; // አሁን የሚታየውን መረጃ ያዝ
+    renderTable(currentFilteredData);  // ሰንጠረዡን በዚህ መረጃ አድስ
+}
+    
+  function exportFilteredDataToCSV() {
+    if (currentFilteredData.length === 0) {
+        alert("የሚወርድ መረጃ የለም!");
         return;
     }
 
-    // 1. የአማርኛ ፊደላት እንዲታዩ UTF-8 BOM መጨመር
-    let csvContent = "\uFEFF"; 
-    csvContent += "Client Name,Status,Created By,Last Updated By,Timestamp\n";
+    // መረጃውን ወደ CSV ፎርማት ቀይር
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Client Name,Status,Date\n"; // የዓምድ ርዕሶች
 
-    dataToExport.forEach(r => {
-        // የኮማ ችግርን ለመከላከል መረጃውን በ引号 (quotes) መጠቅለል
-        let row = `"${r.name}","${r.status}","${r.created_by}","${r.updated_by || ''}","${r.timestamp}"`;
-        csvContent += row + "\n";
+    currentFilteredData.forEach(client => {
+        csvContent += `${client.name},${client.status},${client.date}\n`;
     });
 
-    // 2. በፋይል ስሙ ውስጥ የዛሬን ቀን ማካተት
-    const fileName = `Digaf_Report_${new Date().toISOString().split('T')[0]}.csv`;
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute("href", url);
-    link.setAttribute("download", fileName);
+    // ማውረዱን አስጀምር
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "Digaf_Report.csv");
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
 }
 
     // --- 🖥️ RENDER SCREEN ---
