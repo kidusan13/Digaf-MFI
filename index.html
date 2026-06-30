@@ -1076,7 +1076,6 @@ async function updateRemark(clientId, remarkValue) {
 
     }
   function exportToCSV() {
-    // ማጣሪያውን (filter) globalRecords በሙሉ ይላካል
     let dataToExport = globalRecords; 
 
     if (dataToExport.length === 0) {
@@ -1084,22 +1083,25 @@ async function updateRemark(clientId, remarkValue) {
         return;
     }
 
-    // የCSV ራስጌዎች
-    let csvContent = "data:text/csv;charset=utf-8,";
+    // 1. የአማርኛ ፊደላት እንዲታዩ UTF-8 BOM መጨመር
+    let csvContent = "\uFEFF"; 
     csvContent += "Client Name,Status,Created By,Last Updated By,Timestamp\n";
 
-    // መረጃዎችን መጨመር
     dataToExport.forEach(r => {
-        // የኮማ (comma) ችግር እንዳይፈጠር ስሞችን በ " " መጠቅለል የተሻለ ነው
+        // የኮማ ችግርን ለመከላከል መረጃውን በ引号 (quotes) መጠቅለል
         let row = `"${r.name}","${r.status}","${r.created_by}","${r.updated_by || ''}","${r.timestamp}"`;
         csvContent += row + "\n";
     });
 
-    // ፋይሉን ማውረድ
-    const encodedUri = encodeURI(csvContent);
+    // 2. በፋይል ስሙ ውስጥ የዛሬን ቀን ማካተት
+    const fileName = `Digaf_Report_${new Date().toISOString().split('T')[0]}.csv`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Digaf_Full_Report_${new Date().toLocaleDateString()}.csv`);
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", fileName);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
