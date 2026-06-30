@@ -616,9 +616,12 @@
 
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 
-
+ <button onclick="exportToCSV()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg shadow mt-4">
+    📥 Export Filtered Data to CSV
+</button>
 
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                   
 
 
 
@@ -779,56 +782,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 📥 FETCH FROM SUPABASE ---
 
-    async function fetchRecordsFromCloud() {
+  async function fetchRecordsFromCloud() {
+    try {
+        document.getElementById('sync-status').innerText = "Loading all data...";
+        
+        let allRecords = [];
+        let rangeStart = 0;
+        let step = 1000; // በአንድ ጊዜ 1000 መዝገቦችን ይፈልጋል
+        let fetchMore = true;
 
-        try {
-
-            document.getElementById('sync-status').innerText = "Loading data...";
-
+        while (fetchMore) {
+            // በየደረጃው Range-ውን የሚያዘምንበት URL
             const response = await fetch(`${SUPABASE_URL}/rest/v1/digaf_records?select=*`, {
-
                 method: 'GET',
-
                 headers: {
-
                     'apikey': SUPABASE_ANON_KEY,
-
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Range': `${rangeStart}-${rangeStart + step - 1}`,
+                    'Prefer': 'count=exact'
                 }
-
             });
 
-            if (!response.ok) throw new Error("Fetch failed");
+            if (!response.ok) break;
 
-            globalRecords = await response.json();
-
+            const data = await response.json();
             
-
-            globalRecords.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-
-            
-
-            document.getElementById('sync-status').innerText = "Cloud Live Sync Active";
-
-            
-
-            // ሲከፈት በነባሪ የዛሬውን አሳይ
-
-            filterByPreset('today');
-
-        } catch (err) {
-
-            console.error(err);
-
-            document.getElementById('sync-status').innerText = "Sync Connection Error!";
-
+            if (data.length > 0) {
+                allRecords = allRecords.concat(data);
+                // መረጃው ከ 1000 በታች ከሆነ መጨረሻው ደርሷል ማለት ነው
+                if (data.length < step) {
+                    fetchMore = false;
+                } else {
+                    rangeStart += step;
+                }
+            } else {
+                fetchMore = false;
+            }
         }
 
+        globalRecords = allRecords;
+        console.log("ጠቅላላ የተሰበሰበ መረጃ:", globalRecords.length); // እዚህ ጋር ኮንሶል ላይ ስንት እንደመጣ ይመልከቱ
+        
+        document.getElementById('sync-status').innerText = "Cloud Live Sync Active";
+        filterByPreset('today'); 
+    } catch (err) {
+        console.error(err);
+        document.getElementById('sync-status').innerText = "Sync Connection Error!";
     }
-
-
-
+}
     // --- 🔢 UPDATE COUNTER CARDS ---
 
     function updateCounterCards(data) {
@@ -1074,8 +1075,35 @@ async function updateRemark(clientId, remarkValue) {
         renderLedger(filtered);
 
     }
+  function exportToCSV() {
+    // ማጣሪያውን (filter) globalRecords በሙሉ ይላካል
+    let dataToExport = globalRecords; 
 
+    if (dataToExport.length === 0) {
+        alert("ምንም መረጃ አልተገኘም!");
+        return;
+    }
 
+    // የCSV ራስጌዎች
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Client Name,Status,Created By,Last Updated By,Timestamp\n";
+
+    // መረጃዎችን መጨመር
+    dataToExport.forEach(r => {
+        // የኮማ (comma) ችግር እንዳይፈጠር ስሞችን በ " " መጠቅለል የተሻለ ነው
+        let row = `"${r.name}","${r.status}","${r.created_by}","${r.updated_by || ''}","${r.timestamp}"`;
+        csvContent += row + "\n";
+    });
+
+    // ፋይሉን ማውረድ
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Digaf_Full_Report_${new Date().toLocaleDateString()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
     // --- 🖥️ RENDER SCREEN ---
     function filterLedger() {
