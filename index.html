@@ -21,19 +21,19 @@
 
 
 
-    <style>
+   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-
-
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-
-
-
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-
-
-    </style>
+    /* ሰንጠረዡን ለማስተካከል እዚህ ጋር ትጽፋለህ */
+    #ledger-rows tr {
+        transition: all 0.2s;
+    }
+    #ledger-rows tr:hover {
+        background-color: #f8fafc;
+    }
+</style>
 
 
 
@@ -1141,42 +1141,46 @@ async function updateRemark(clientId, remarkValue) {
         if (r.status === "No Response") badgeColor = "border-red-200 text-red-700 bg-red-50";
         if (r.status === "Complete") badgeColor = "border-indigo-200 text-indigo-700 bg-indigo-50";
 
-        tr.innerHTML = `
-            <td class="px-6 py-3">
-                <div class="font-bold text-slate-800 text-sm">${r.name}</div>
-            </td>
-            <td class="px-6 py-3">
-                <div class="flex items-center space-x-2">
-                    <select onchange="updateStatus('${r.id}', this.value)" class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-32">
-                        <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
-                        <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
-                        <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
-                        <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
-                    </select>
-                    
-                    ${r.status === 'Paid' ? `
-                        <input type="text" placeholder="Remark..." value="${r.remark || ''}" 
-                        onblur="updateRemark('${r.id}', this.value)" 
-                        class="px-2 py-1.5 border border-emerald-200 rounded-lg text-xs w-24 focus:outline-none focus:border-emerald-500">
-                    ` : ''}
+    tr.innerHTML = `
+    <td class="px-6 py-4">
+        <div class="font-bold text-slate-800 text-sm">${r.name}</div>
+    </td>
 
-                    <button onclick="deleteRecord('${r.id}')" class="text-red-400 hover:text-red-600 font-bold text-xs px-2 transition-colors">
-                        ❌
-                    </button>
-                </div>
-            </td>
-            <td class="px-6 py-3 text-slate-500 font-medium text-[11px]">
-                <div class="flex flex-col">
-                    <div class="text-[9px] uppercase tracking-wider text-slate-400">Created: ${r.created_by || 'System'}</div>
-                    ${r.updated_by ? `
-                        <div class="text-indigo-600 font-bold mt-0.5">
-                            Last Edit: ${r.updated_by}
-                        </div>` : ''
-                    }
-                </div>
-                <div class="text-slate-400 font-mono mt-1">${r.timestamp || ''}</div>
-            </td>
-        `;
+    <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+            <select onchange="updateStatus('${r.id}', this.value)" 
+                    class="${badgeColor} border rounded-lg text-xs font-bold px-3 py-1.5 focus:outline-none cursor-pointer w-[140px]">
+                <option value="Renewal" ${r.status === 'Renewal' ? 'selected' : ''}>🟡 Renewal</option>
+                <option value="Paid" ${r.status === 'Paid' ? 'selected' : ''}>🟢 Paid</option>
+                <option value="No Response" ${r.status === 'No Response' ? 'selected' : ''}>🔴 No Response</option>
+                <option value="Complete" ${r.status === 'Complete' ? 'selected' : ''}>🔵 Complete</option>
+            </select>
+            
+            ${r.status === 'Paid' ? `
+                <input type="text" placeholder="Remark..." value="${r.remark || ''}" 
+                onblur="updateRemark('${r.id}', this.value)" 
+                class="px-3 py-1.5 border border-emerald-200 rounded-lg text-xs w-[100px] focus:outline-none focus:border-emerald-500">
+            ` : ''}
+
+            <button onclick="deleteRecord('${r.id}')" 
+                    class="text-slate-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50" title="Delete">
+                🗑️
+            </button>
+        </div>
+    </td>
+
+    <td class="px-6 py-4">
+        <div class="flex flex-col gap-0.5">
+            <div class="text-[10px] uppercase text-slate-400 font-bold">👤 ${r.created_by || 'System'}</div>
+            ${r.updated_by ? `
+                <div class="text-indigo-600 text-xs font-bold">
+                    ✎ ${r.updated_by}
+                </div>` : ''
+            }
+            <div class="text-[10px] text-slate-400 font-mono">${r.timestamp || ''}</div>
+        </div>
+    </td>
+`;
         tbody.appendChild(tr);
     });
 }
